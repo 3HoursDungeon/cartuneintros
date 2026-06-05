@@ -66,8 +66,101 @@ header{background:linear-gradient(135deg,#e94560 0%,#f5a623 50%,#e94560 100%);ba
 .show-item.playing .item-name{color:var(--a3);}
 .item-meta{font-size:.6rem;color:var(--muted);display:flex;gap:4px;margin-top:1px;flex-wrap:wrap;}
 .net-tag{background:rgba(255,255,255,.06);padding:0 4px;border-radius:3px;}
+.no-link-dot{width:7px;height:7px;border-radius:50%;background:#e94560;flex-shrink:0;opacity:0.7;margin-right:2px;title:"No theme link yet";}
 .item-actions{display:flex;gap:3px;opacity:0;transition:opacity .15s;flex-shrink:0;}
 .show-item:hover .item-actions{opacity:1;}
+@media (hover: none) { .item-actions { opacity: 1; } }
+
+/* ── MOBILE LAYOUT ── */
+@media (max-width: 768px) {
+  body { overflow: hidden; }
+
+  .main {
+    flex-direction: column;
+    position: relative;
+    height: calc(100vh - 46px);
+  }
+
+  /* Hide all panels by default on mobile */
+  .sidebar, .player-area, .queue-panel {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Show active tab */
+  .sidebar.mob-active,
+  .player-area.mob-active,
+  .queue-panel.mob-active {
+    display: flex;
+  }
+
+  /* Remove desktop borders */
+  .sidebar { border-right: none; }
+  .queue-panel { border-left: none; width: 100%; }
+
+  /* Bottom tab bar */
+  .mob-tabs {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 56px;
+    background: #0a0a1a;
+    border-top: 1.5px solid rgba(255,255,255,.08);
+    display: flex;
+    z-index: 50;
+  }
+
+  .mob-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'Nunito', sans-serif;
+    font-size: .6rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: color .15s;
+    border-top: 2px solid transparent;
+  }
+
+  .mob-tab .tab-icon { font-size: 1.3rem; line-height: 1; }
+  .mob-tab.active { color: var(--a2); border-top-color: var(--a2); }
+
+  /* Push content above tab bar */
+  .app { padding-bottom: 56px; }
+
+  /* Player tweaks on mobile */
+  .now-playing { padding: 10px 14px; }
+  .np-title { font-size: 1.3rem; }
+  .np-controls { gap: 5px; }
+  .ctrl-btn { padding: 4px 10px; font-size: .68rem; }
+  .iframe-wrap { flex: 1; min-height: 0; }
+
+  /* Sidebar tweaks */
+  .show-list { flex: 1; }
+
+  /* Queue panel tweaks */
+  .queue-panel { height: 100%; }
+  .autoplay-row { margin-bottom: 0; }
+
+  /* Header shrink */
+  header { padding: 7px 14px; }
+  .logo { font-size: 1.4rem; }
+  .hstats { font-size: .65rem; }
+}
+
+/* Hide mob-tabs on desktop */
+.mob-tabs { display: none; }
+@media (max-width: 768px) { .mob-tabs { display: flex; } }
 .btn-xs{border:none;border-radius:5px;padding:3px 6px;font-size:.65rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:opacity .15s;line-height:1;}
 .btn-xs:hover{opacity:.8;}
 .btn-play{background:var(--a1);color:#fff;}
@@ -275,7 +368,18 @@ header{background:linear-gradient(135deg,#e94560 0%,#f5a623 50%,#e94560 100%);ba
 </div>
 </div>
 
-<!-- Share Modal -->
+<!-- Mobile bottom tab bar -->
+<div class="mob-tabs">
+  <button class="mob-tab active" id="mobTabShows" onclick="switchMobTab('shows')">
+    <span class="tab-icon">📺</span>Shows
+  </button>
+  <button class="mob-tab" id="mobTabPlayer" onclick="switchMobTab('player')">
+    <span class="tab-icon">▶️</span>Player
+  </button>
+  <button class="mob-tab" id="mobTabQueue" onclick="switchMobTab('queue')">
+    <span class="tab-icon">🎵</span>Queue
+  </button>
+</div>
 <div class="modal-backdrop" id="shareModal">
   <div class="modal">
     <h3>🔗 Share This Show</h3>
@@ -325,9 +429,9 @@ const SHOWS = [
   { name: "The Ruff & Reddy Show", era: "1950s", net: "NBC", year: 1957 },
   { name: "Pixie and Dixie and Mr. Jinks", era: "1950s", net: "Syndicated", year: 1958 },
   { name: "Felix the Cat", era: "1950s", net: "Syndicated", year: 1958 },
-  { name: "Clutch Cargo", era: "1950s", net: "Syndicated", year: 1959 },
+  { name: "Clutch Cargo", ytId: "ANBCSuuESZM", era: "1950s", net: "Syndicated", year: 1959 },
   { name: "The Gerald McBoing-Boing Show", era: "1950s", net: "CBS", year: 1956 },
-  { name: "Crusader Rabbit", era: "1950s", net: "Syndicated", year: 1950 },
+  { name: "Crusader Rabbit", ytId: "ztMTJErYOHM", era: "1950s", net: "Syndicated", year: 1950 },
 
   // ─── 1960s ───
   { name: "The Flintstones", era: "1960s", net: "ABC", year: 1960 },
@@ -336,7 +440,7 @@ const SHOWS = [
   { name: "The Bullwinkle Show", era: "1960s", net: "NBC", year: 1961 },
   { name: "Dudley Do-Right", era: "1960s", net: "ABC", year: 1969 },
   { name: "Peabody's Improbable History", era: "1960s", net: "NBC", year: 1959 },
-  { name: "Fractured Fairy Tales", era: "1960s", net: "NBC", year: 1959 },
+  { name: "Fractured Fairy Tales", ytId: "dW41oEYUHW8", era: "1960s", net: "NBC", year: 1959 },
   { name: "The Bugs Bunny Show", era: "1960s", net: "ABC", year: 1960 },
   { name: "The Road Runner Show", era: "1960s", net: "CBS", year: 1966 },
   { name: "The Porky Pig Show", era: "1960s", net: "ABC", year: 1964 },
@@ -347,12 +451,12 @@ const SHOWS = [
   { name: "Yakky Doodle", era: "1960s", net: "Syndicated", year: 1960 },
   { name: "Wally Gator", era: "1960s", net: "Syndicated", year: 1962 },
   { name: "Touche Turtle", era: "1960s", net: "Syndicated", year: 1962 },
-  { name: "Augie Doggie and Doggie Daddy", era: "1960s", net: "Syndicated", year: 1959 },
+  { name: "Augie Doggie and Doggie Daddy", ytId: "hlBQRN9zpUU", era: "1960s", net: "Syndicated", year: 1959 },
   { name: "Hector Heathcote", era: "1960s", net: "NBC", year: 1963 },
-  { name: "Deputy Dawg", era: "1960s", net: "Syndicated", year: 1959 },
-  { name: "Beany and Cecil", era: "1960s", net: "ABC", year: 1962 },
+  { name: "Deputy Dawg", ytId: "aI3GS6F8Seo", era: "1960s", net: "Syndicated", year: 1959 },
+  { name: "Beany and Cecil", ytId: "jMHm9iDf2H4", era: "1960s", net: "ABC", year: 1962 },
   { name: "King Leonardo and His Short Subjects", era: "1960s", net: "NBC", year: 1960 },
-  { name: "Davey and Goliath", era: "1960s", net: "Syndicated", year: 1961 },
+  { name: "Davey and Goliath", ytId: "sSi--o0QsNE", era: "1960s", net: "Syndicated", year: 1961 },
   { name: "The Alvin Show", era: "1960s", net: "CBS", year: 1961 },
   { name: "The Dick Tracy Show", era: "1960s", net: "Syndicated", year: 1961 },
   { name: "Tales of the Wizard of Oz", era: "1960s", net: "Syndicated", year: 1961 },
@@ -360,15 +464,15 @@ const SHOWS = [
   { name: "Magilla Gorilla", era: "1960s", net: "Syndicated", year: 1964 },
   { name: "Peter Potamus", era: "1960s", net: "Syndicated", year: 1964 },
   { name: "Secret Squirrel", era: "1960s", net: "NBC", year: 1965 },
-  { name: "Atom Ant", era: "1960s", net: "NBC", year: 1965 },
+  { name: "Atom Ant", ytId: "sKqFBkskx7M", era: "1960s", net: "NBC", year: 1965 },
   { name: "Squiddly Diddly", era: "1960s", net: "NBC", year: 1965 },
   { name: "Space Ghost and Dino Boy", era: "1960s", net: "CBS", year: 1966 },
   { name: "Frankenstein Jr. and the Impossibles", era: "1960s", net: "CBS", year: 1966 },
   { name: "The Herculoids", era: "1960s", net: "CBS", year: 1967 },
   { name: "The Mighty Mightor", era: "1960s", net: "CBS", year: 1967 },
   { name: "Shazzan", era: "1960s", net: "CBS", year: 1967 },
-  { name: "Birdman and the Galaxy Trio", era: "1960s", net: "NBC", year: 1967 },
-  { name: "Cool McCool", era: "1960s", net: "NBC", year: 1966 },
+  { name: "Birdman and the Galaxy Trio", ytId: "MUgthqRjD9M", era: "1960s", net: "NBC", year: 1967 },
+  { name: "Cool McCool", ytId: "BGto6FuEEhE", era: "1960s", net: "NBC", year: 1966 },
   { name: "The Beatles cartoon", era: "1960s", net: "ABC", year: 1965 },
   { name: "George of the Jungle", era: "1960s", net: "ABC", year: 1967 },
   { name: "Super Chicken", era: "1960s", net: "ABC", year: 1967 },
@@ -376,20 +480,20 @@ const SHOWS = [
   { name: "The Banana Splits Adventure Hour", era: "1960s", net: "NBC", year: 1968 },
   { name: "Wacky Races", era: "1960s", net: "CBS", year: 1968 },
   { name: "The Perils of Penelope Pitstop", era: "1960s", net: "CBS", year: 1969 },
-  { name: "Dastardly and Muttley in Their Flying Machines", era: "1960s", net: "CBS", year: 1969 },
-  { name: "Cattanooga Cats", era: "1960s", net: "ABC", year: 1969 },
+  { name: "Dastardly and Muttley in Their Flying Machines", ytId: "SK3eEs3wm3k", era: "1960s", net: "CBS", year: 1969 },
+  { name: "Cattanooga Cats", ytId: "oiH8Ek3gE9A", era: "1960s", net: "ABC", year: 1969 },
   { name: "Speed Racer", era: "1960s", net: "Syndicated", year: 1967 },
   { name: "Kimba the White Lion", era: "1960s", net: "NBC", year: 1966 },
   { name: "Gigantor", era: "1960s", net: "Syndicated", year: 1966 },
   { name: "Marine Boy", era: "1960s", net: "Syndicated", year: 1966 },
-  { name: "Casper the Friendly Ghost", era: "1960s", net: "ABC", year: 1963 },
+  { name: "Casper the Friendly Ghost", ytId: "CQIap0pmEc4", era: "1960s", net: "ABC", year: 1963 },
   { name: "Spider-Man 1967", era: "1960s", net: "ABC", year: 1967 },
   { name: "The Fantastic Four 1967", era: "1960s", net: "ABC", year: 1967 },
   { name: "Iron Man 1966", era: "1960s", net: "Syndicated", year: 1966 },
   { name: "The Incredible Hulk 1966", era: "1960s", net: "Syndicated", year: 1966 },
-  { name: "Captain America 1966", era: "1960s", net: "Syndicated", year: 1966 },
+  { name: "Captain America 1966", ytId: "F_31N_60QK4", era: "1960s", net: "Syndicated", year: 1966 },
   { name: "Thor 1966", era: "1960s", net: "Syndicated", year: 1966 },
-  { name: "Aquaman cartoon", era: "1960s", net: "CBS", year: 1968 },
+  { name: "Aquaman cartoon", ytId: "4cwkG9Py8l4", era: "1960s", net: "CBS", year: 1968 },
   { name: "The New Adventures of Superman", era: "1960s", net: "CBS", year: 1966 },
   { name: "Space Angel", era: "1960s", net: "Syndicated", year: 1962 },
   { name: "Mighty Hercules", era: "1960s", net: "Syndicated", year: 1963 },
@@ -412,7 +516,7 @@ const SHOWS = [
   { name: "Super Friends", era: "1970s", net: "ABC", year: 1973 },
   { name: "Yogi's Gang", era: "1970s", net: "ABC", year: 1973 },
   { name: "Star Trek the Animated Series", era: "1970s", net: "NBC", year: 1973 },
-  { name: "Hong Kong Phooey", era: "1970s", net: "ABC", year: 1974 },
+  { name: "Hong Kong Phooey", ytId: "gz-kWEkazKg", era: "1970s", net: "ABC", year: 1974 },
   { name: "Valley of the Dinosaurs", era: "1970s", net: "CBS", year: 1974 },
   { name: "Land of the Lost", era: "1970s", net: "NBC", year: 1974 },
   { name: "Sigmund and the Sea Monsters", era: "1970s", net: "NBC", year: 1973 },
@@ -424,10 +528,10 @@ const SHOWS = [
   { name: "Scooby-Doo Where Are You!", era: "1970s", net: "CBS", year: 1969 },
   { name: "The New Scooby-Doo Movies", era: "1970s", net: "CBS", year: 1972 },
   { name: "The Scooby-Doo Show", era: "1970s", net: "ABC", year: 1976 },
-  { name: "Captain Caveman and the Teen Angels", era: "1970s", net: "ABC", year: 1977 },
+  { name: "Captain Caveman and the Teen Angels", ytId: "ZkX5RJu_X9s", era: "1970s", net: "ABC", year: 1977 },
   { name: "Dynomutt Dog Wonder", era: "1970s", net: "ABC", year: 1976 },
   { name: "Laff-A-Lympics", era: "1970s", net: "ABC", year: 1977 },
-  { name: "Grape Ape", era: "1970s", net: "ABC", year: 1975 },
+  { name: "Grape Ape", ytId: "oCEBdAh5NPo", era: "1970s", net: "ABC", year: 1975 },
   { name: "Josie and the Pussycats in Outer Space", era: "1970s", net: "CBS", year: 1972 },
   { name: "The Addams Family cartoon", era: "1970s", net: "NBC", year: 1973 },
   { name: "Groovie Goolies", era: "1970s", net: "CBS", year: 1970 },
@@ -437,57 +541,57 @@ const SHOWS = [
   { name: "The All-New Popeye Hour", era: "1970s", net: "CBS", year: 1978 },
   { name: "Godzilla 1978 cartoon", era: "1970s", net: "NBC", year: 1978 },
   { name: "Richie Rich cartoon", era: "1970s", net: "ABC", year: 1980 },
-  { name: "Fangface", era: "1970s", net: "ABC", year: 1978 },
+  { name: "Fangface", ytId: "XHq6bC4TtP8", era: "1970s", net: "ABC", year: 1978 },
   { name: "Tom and Jerry Show 1975", era: "1970s", net: "ABC", year: 1975 },
   { name: "The Oddball Couple", era: "1970s", net: "ABC", year: 1975 },
   { name: "Wheelie and the Chopper Bunch", era: "1970s", net: "NBC", year: 1974 },
-  { name: "Butch Cassidy and the Sundance Kids", era: "1970s", net: "NBC", year: 1973 },
+  { name: "Butch Cassidy and the Sundance Kids", ytId: "xUOFKCJk60s", era: "1970s", net: "NBC", year: 1973 },
   { name: "Plastic Man", era: "1970s", net: "ABC", year: 1979 },
   { name: "The C.B. Bears", era: "1970s", net: "NBC", year: 1977 },
-  { name: "Bailey's Comets", era: "1970s", net: "CBS", year: 1973 },
-  { name: "Devlin", era: "1970s", net: "ABC", year: 1974 },
+  { name: "Bailey's Comets", ytId: "eaWyDELKBbk", era: "1970s", net: "CBS", year: 1973 },
+  { name: "Devlin", ytId: "ICEYuXR5-LI", era: "1970s", net: "ABC", year: 1974 },
   { name: "The Ghost Busters", era: "1970s", net: "CBS", year: 1975 },
-  { name: "Ark II", era: "1970s", net: "CBS", year: 1976 },
+  { name: "Ark II", ytId: "rP0JhslTriw", era: "1970s", net: "CBS", year: 1976 },
   { name: "Mumbly", era: "1970s", net: "ABC", year: 1976 },
   { name: "The Barkleys", era: "1970s", net: "NBC", year: 1972 },
   { name: "Monster Squad", era: "1970s", net: "NBC", year: 1976 },
-  { name: "Dr. Shrinker", era: "1970s", net: "ABC", year: 1976 },
+  { name: "Dr. Shrinker", ytId: "Vh1iXZ3pQtQ", era: "1970s", net: "ABC", year: 1976 },
   { name: "Electra Woman and Dyna Girl", era: "1970s", net: "ABC", year: 1976 },
   { name: "Wonderbug", era: "1970s", net: "ABC", year: 1976 },
-  { name: "Bigfoot and Wildboy", era: "1970s", net: "ABC", year: 1977 },
-  { name: "Fantastic Four 1978", era: "1970s", net: "NBC", year: 1978 },
+  { name: "Bigfoot and Wildboy", ytId: "RMGXF5e7530", era: "1970s", net: "ABC", year: 1977 },
+  { name: "Fantastic Four 1978", ytId: "Dhmop47SZmg", era: "1970s", net: "NBC", year: 1978 },
   { name: "Spider-Woman cartoon", era: "1970s", net: "ABC", year: 1979 },
   { name: "The New Adventures of Batman", era: "1970s", net: "CBS", year: 1977 },
   { name: "New Adventures of Flash Gordon", era: "1970s", net: "NBC", year: 1979 },
 
   // ─── 1980s ───
   { name: "The Smurfs", era: "1980s", net: "NBC", year: 1981 },
-  { name: "Dungeons and Dragons cartoon", era: "1980s", net: "CBS", year: 1983 },
+  { name: "Dungeons and Dragons cartoon", ytId: "ecKn6FlWWKc", era: "1980s", net: "CBS", year: 1983 },
   { name: "He-Man and the Masters of the Universe", era: "1980s", net: "Syndicated", year: 1983 },
   { name: "She-Ra Princess of Power", era: "1980s", net: "Syndicated", year: 1985 },
-  { name: "Alvin and the Chipmunks", era: "1980s", net: "NBC", year: 1983 },
+  { name: "Alvin and the Chipmunks", ytId: "R4h0hVnmZ4g", era: "1980s", net: "NBC", year: 1983 },
   { name: "Muppet Babies", era: "1980s", net: "CBS", year: 1984 },
   { name: "The Transformers", era: "1980s", net: "Syndicated", year: 1984 },
-  { name: "G.I. Joe A Real American Hero", era: "1980s", net: "Syndicated", year: 1983 },
+  { name: "G.I. Joe A Real American Hero", ytId: "AEaWWdjhXRA", era: "1980s", net: "Syndicated", year: 1983 },
   { name: "Thundercats", era: "1980s", net: "Syndicated", year: 1985 },
   { name: "Voltron Defender of the Far Universe", era: "1980s", net: "Syndicated", year: 1984 },
-  { name: "Challenge of the GoBots", era: "1980s", net: "Syndicated", year: 1984 },
+  { name: "Challenge of the GoBots", ytId: "8uRDvdSQsI4", era: "1980s", net: "Syndicated", year: 1984 },
   { name: "Jem and the Holograms", era: "1980s", net: "Syndicated", year: 1985 },
   { name: "My Little Pony", era: "1980s", net: "Syndicated", year: 1984 },
-  { name: "Care Bears cartoon", era: "1980s", net: "Syndicated", year: 1985 },
+  { name: "Care Bears cartoon", ytId: "4vK0sLT7_o0", era: "1980s", net: "Syndicated", year: 1985 },
   { name: "Rainbow Brite", era: "1980s", net: "CBS", year: 1984 },
   { name: "Strawberry Shortcake cartoon", era: "1980s", net: "ABC", year: 1980 },
   { name: "The Real Ghostbusters", era: "1980s", net: "ABC", year: 1986 },
   { name: "Slimer and The Real Ghostbusters", era: "1980s", net: "ABC", year: 1988 },
-  { name: "Filmation's Ghostbusters", era: "1980s", net: "Syndicated", year: 1986 },
+  { name: "Filmation's Ghostbusters", ytId: "Fe93CLbHjxQ", era: "1980s", net: "Syndicated", year: 1986 },
   { name: "Inspector Gadget", era: "1980s", net: "Syndicated", year: 1983 },
   { name: "Heathcliff cartoon", era: "1980s", net: "ABC", year: 1984 },
   { name: "Garfield and Friends", era: "1980s", net: "CBS", year: 1988 },
   { name: "DuckTales", era: "1980s", net: "Syndicated", year: 1987 },
-  { name: "Chip 'n Dale Rescue Rangers", era: "1980s", net: "Syndicated", year: 1989 },
+  { name: "Chip 'n Dale Rescue Rangers", ytId: "9KXgLQXtibk", era: "1980s", net: "Syndicated", year: 1989 },
   { name: "TaleSpin", era: "1980s", net: "Syndicated", year: 1990 },
   { name: "Darkwing Duck", era: "1980s", net: "Syndicated", year: 1991 },
-  { name: "Adventures of the Gummi Bears", era: "1980s", net: "NBC", year: 1985 },
+  { name: "Adventures of the Gummi Bears", ytId: "bJmWyZlW2sE", era: "1980s", net: "NBC", year: 1985 },
   { name: "Teenage Mutant Ninja Turtles 1987", era: "1980s", net: "Syndicated", year: 1987 },
   { name: "Pee-Wee's Playhouse", era: "1980s", net: "CBS", year: 1986 },
   { name: "Pac-Man cartoon", era: "1980s", net: "ABC", year: 1982 },
@@ -495,11 +599,11 @@ const SHOWS = [
   { name: "Turbo Teen", era: "1980s", net: "ABC", year: 1984 },
   { name: "Pole Position cartoon", era: "1980s", net: "CBS", year: 1984 },
   { name: "Kidd Video", era: "1980s", net: "NBC", year: 1984 },
-  { name: "Chuck Norris Karate Kommandos", era: "1980s", net: "Syndicated", year: 1986 },
+  { name: "Chuck Norris Karate Kommandos", ytId: "sLWmfsv3XDE", era: "1980s", net: "Syndicated", year: 1986 },
   { name: "Rambo The Force of Freedom", era: "1980s", net: "Syndicated", year: 1986 },
   { name: "M.A.S.K. cartoon", era: "1980s", net: "Syndicated", year: 1985 },
   { name: "SilverHawks", era: "1980s", net: "Syndicated", year: 1986 },
-  { name: "BraveStarr", era: "1980s", net: "Syndicated", year: 1987 },
+  { name: "BraveStarr", ytId: "gm3hd7m5wzM", era: "1980s", net: "Syndicated", year: 1987 },
   { name: "The Centurions cartoon", era: "1980s", net: "Syndicated", year: 1986 },
   { name: "Visionaries Knights of the Magical Light", era: "1980s", net: "Syndicated", year: 1987 },
   { name: "Inhumanoids", era: "1980s", net: "Syndicated", year: 1986 },
@@ -518,16 +622,16 @@ const SHOWS = [
   { name: "Rubik the Amazing Cube", era: "1980s", net: "ABC", year: 1983 },
   { name: "Gilligan's Planet", era: "1980s", net: "CBS", year: 1982 },
   { name: "The Dukes cartoon", era: "1980s", net: "CBS", year: 1983 },
-  { name: "Blackstar cartoon", era: "1980s", net: "CBS", year: 1981 },
+  { name: "Blackstar cartoon", ytId: "7gEglHALTPQ", era: "1980s", net: "CBS", year: 1981 },
   { name: "Thundarr the Barbarian", era: "1980s", net: "ABC", year: 1980 },
   { name: "Dragon's Lair cartoon", era: "1980s", net: "ABC", year: 1984 },
   { name: "Saturday Supercade", era: "1980s", net: "CBS", year: 1983 },
   { name: "The Space Stars", era: "1980s", net: "NBC", year: 1981 },
   { name: "The Trollkins", era: "1980s", net: "CBS", year: 1981 },
   { name: "Goldie Gold and Action Jack", era: "1980s", net: "ABC", year: 1981 },
-  { name: "Dino-Riders", era: "1980s", net: "Syndicated", year: 1988 },
+  { name: "Dino-Riders", ytId: "QwpmqGGD-dQ", era: "1980s", net: "Syndicated", year: 1988 },
   { name: "The Super Mario Bros Super Show", era: "1980s", net: "Syndicated", year: 1989 },
-  { name: "Captain N The Game Master", era: "1980s", net: "NBC", year: 1989 },
+  { name: "Captain N The Game Master", ytId: "YYlEWAN8_Eg", era: "1980s", net: "NBC", year: 1989 },
   { name: "Legend of Zelda cartoon", era: "1980s", net: "NBC", year: 1989 },
   { name: "Mork and Mindy cartoon", era: "1980s", net: "ABC", year: 1982 },
   { name: "The Fonz and the Happy Days Gang", era: "1980s", net: "ABC", year: 1980 },
@@ -535,103 +639,103 @@ const SHOWS = [
   { name: "The Kid Super Power Hour with Shazam!", era: "1980s", net: "NBC", year: 1981 },
   { name: "Ewoks cartoon", era: "1980s", net: "ABC", year: 1985 },
   { name: "Droids cartoon", era: "1980s", net: "ABC", year: 1985 },
-  { name: "Galaxy High School cartoon", era: "1980s", net: "CBS", year: 1986 },
+  { name: "Galaxy High School cartoon", ytId: "d3Wslv5Klfo", era: "1980s", net: "CBS", year: 1986 },
   { name: "Teen Wolf cartoon", era: "1980s", net: "CBS", year: 1986 },
-  { name: "ALF Tales", era: "1980s", net: "NBC", year: 1988 },
-  { name: "ALF The Animated Series", era: "1980s", net: "NBC", year: 1987 },
+  { name: "ALF Tales", ytId: "WZDVb9sB6UE", era: "1980s", net: "NBC", year: 1988 },
+  { name: "ALF The Animated Series", ytId: "WZDVb9sB6UE", era: "1980s", net: "NBC", year: 1987 },
   { name: "Popples cartoon", era: "1980s", net: "Syndicated", year: 1986 },
   { name: "The Get Along Gang", era: "1980s", net: "CBS", year: 1984 },
   { name: "Kissyfur", era: "1980s", net: "NBC", year: 1986 },
   { name: "Sky Commanders", era: "1980s", net: "Syndicated", year: 1987 },
   { name: "Spiral Zone", era: "1980s", net: "Syndicated", year: 1987 },
-  { name: "Bionic Six", era: "1980s", net: "Syndicated", year: 1987 },
+  { name: "Bionic Six", ytId: "OCK1t7UTpbE", era: "1980s", net: "Syndicated", year: 1987 },
   { name: "Saber Rider and the Star Sheriffs", era: "1980s", net: "Syndicated", year: 1987 },
   { name: "Sectaurs cartoon", era: "1980s", net: "CBS", year: 1985 },
   { name: "Robotix cartoon", era: "1980s", net: "ABC", year: 1985 },
   { name: "Jem", era: "1980s", net: "Syndicated", year: 1985 },
 
   // ─── 1990s ───
-  { name: "Animaniacs", era: "1990s", net: "Fox Kids / WB", year: 1993 },
+  { name: "Animaniacs", ytId: "O7Q4tPTLUVk", era: "1990s", net: "Fox Kids / WB", year: 1993 },
   { name: "Tiny Toon Adventures", era: "1990s", net: "Fox Kids", year: 1990 },
   { name: "Pinky and the Brain", era: "1990s", net: "WB", year: 1995 },
   { name: "Freakazoid!", era: "1990s", net: "WB", year: 1995 },
-  { name: "Batman The Animated Series", era: "1990s", net: "Fox Kids", year: 1992 },
+  { name: "Batman The Animated Series", ytId: "LLFtgDd16Wg", era: "1990s", net: "Fox Kids", year: 1992 },
   { name: "Superman The Animated Series", era: "1990s", net: "WB", year: 1996 },
-  { name: "Batman Beyond", era: "1990s", net: "WB", year: 1999 },
+  { name: "Batman Beyond", ytId: "sP2NNhEPneU", era: "1990s", net: "WB", year: 1999 },
   { name: "The New Batman Adventures", era: "1990s", net: "WB", year: 1997 },
   { name: "X-Men The Animated Series", era: "1990s", net: "Fox Kids", year: 1992 },
   { name: "Spider-Man The Animated Series", era: "1990s", net: "Fox Kids", year: 1994 },
   { name: "The Tick animated", era: "1990s", net: "Fox Kids", year: 1994 },
-  { name: "Earthworm Jim cartoon", era: "1990s", net: "WB", year: 1995 },
+  { name: "Earthworm Jim cartoon", ytId: "hVSyb5O1XK4", era: "1990s", net: "WB", year: 1995 },
   { name: "Mighty Morphin Power Rangers", era: "1990s", net: "Fox Kids", year: 1993 },
   { name: "VR Troopers", era: "1990s", net: "Syndicated", year: 1994 },
-  { name: "Big Bad Beetleborgs", era: "1990s", net: "Fox Kids", year: 1996 },
+  { name: "Big Bad Beetleborgs", ytId: "nSGkZR2WeAw", era: "1990s", net: "Fox Kids", year: 1996 },
   { name: "Masked Rider", era: "1990s", net: "Fox Kids", year: 1995 },
   { name: "Street Sharks", era: "1990s", net: "Syndicated", year: 1994 },
   { name: "Extreme Dinosaurs", era: "1990s", net: "Syndicated", year: 1997 },
-  { name: "Biker Mice from Mars", era: "1990s", net: "Syndicated", year: 1993 },
-  { name: "Bucky O'Hare cartoon", era: "1990s", net: "Syndicated", year: 1991 },
+  { name: "Biker Mice from Mars", ytId: "2hW0HLmgWhg", era: "1990s", net: "Syndicated", year: 1993 },
+  { name: "Bucky O'Hare cartoon", ytId: "2d8Df7gf5yY", era: "1990s", net: "Syndicated", year: 1991 },
   { name: "The Pirates of Dark Water", era: "1990s", net: "ABC", year: 1991 },
   { name: "Gargoyles", era: "1990s", net: "Syndicated", year: 1994 },
   { name: "The Mighty Ducks cartoon", era: "1990s", net: "Syndicated", year: 1996 },
   { name: "Quack Pack", era: "1990s", net: "Syndicated", year: 1996 },
   { name: "Goof Troop", era: "1990s", net: "Syndicated", year: 1992 },
-  { name: "Aladdin The Series", era: "1990s", net: "Syndicated", year: 1994 },
+  { name: "Aladdin The Series", ytId: "7VVZ_mB_HAc", era: "1990s", net: "Syndicated", year: 1994 },
   { name: "The Little Mermaid cartoon", era: "1990s", net: "CBS", year: 1992 },
   { name: "Timon and Pumbaa cartoon", era: "1990s", net: "Syndicated", year: 1995 },
-  { name: "Hercules The Animated Series", era: "1990s", net: "Syndicated", year: 1998 },
+  { name: "Hercules The Animated Series", ytId: "ZSgSNq1dnA4", era: "1990s", net: "Syndicated", year: 1998 },
   { name: "The New Adventures of Winnie the Pooh", era: "1990s", net: "Syndicated", year: 1988 },
-  { name: "Bonkers cartoon", era: "1990s", net: "Syndicated", year: 1993 },
-  { name: "Bobby's World", era: "1990s", net: "Fox Kids", year: 1990 },
+  { name: "Bonkers cartoon", ytId: "sN6tia-YAuU", era: "1990s", net: "Syndicated", year: 1993 },
+  { name: "Bobby's World", ytId: "i315vNxEzJ0", era: "1990s", net: "Fox Kids", year: 1990 },
   { name: "Eek! the Cat", era: "1990s", net: "Fox Kids", year: 1992 },
-  { name: "2 Stupid Dogs", era: "1990s", net: "Syndicated", year: 1993 },
+  { name: "2 Stupid Dogs", ytId: "yTACiq0nasU", era: "1990s", net: "Syndicated", year: 1993 },
   { name: "SWAT Kats The Radical Squadron", era: "1990s", net: "Syndicated", year: 1993 },
-  { name: "C.O.P.S. cartoon", era: "1990s", net: "Syndicated", year: 1988 },
+  { name: "C.O.P.S. cartoon", ytId: "MuckMAkHsSk", era: "1990s", net: "Syndicated", year: 1988 },
   { name: "Rugrats", era: "1990s", net: "Nickelodeon", year: 1991 },
-  { name: "Doug cartoon", era: "1990s", net: "Nickelodeon", year: 1991 },
+  { name: "Doug cartoon", ytId: "mgT1Me7h6m0", era: "1990s", net: "Nickelodeon", year: 1991 },
   { name: "The Ren and Stimpy Show", era: "1990s", net: "Nickelodeon", year: 1991 },
   { name: "Rocko's Modern Life", era: "1990s", net: "Nickelodeon", year: 1993 },
-  { name: "Aaahh!!! Real Monsters", era: "1990s", net: "Nickelodeon", year: 1994 },
+  { name: "Aaahh!!! Real Monsters", ytId: "Z4e-TqdDUN0", era: "1990s", net: "Nickelodeon", year: 1994 },
   { name: "Hey Arnold!", era: "1990s", net: "Nickelodeon", year: 1996 },
   { name: "The Wild Thornberrys", era: "1990s", net: "Nickelodeon", year: 1998 },
-  { name: "As Told By Ginger", era: "1990s", net: "Nickelodeon", year: 2000 },
+  { name: "As Told By Ginger", ytId: "6qhT2Q-jZMQ", era: "1990s", net: "Nickelodeon", year: 2000 },
   { name: "Rocket Power", era: "1990s", net: "Nickelodeon", year: 1999 },
-  { name: "CatDog cartoon", era: "1990s", net: "Nickelodeon", year: 1998 },
+  { name: "CatDog cartoon", ytId: "bCWxhCNr_XU", era: "1990s", net: "Nickelodeon", year: 1998 },
   { name: "SpongeBob SquarePants", era: "1990s", net: "Nickelodeon", year: 1999 },
   { name: "The Angry Beavers", era: "1990s", net: "Nickelodeon", year: 1997 },
   { name: "KaBlam!", era: "1990s", net: "Nickelodeon", year: 1996 },
-  { name: "Dexter's Laboratory", era: "1990s", net: "Cartoon Network", year: 1996 },
+  { name: "Dexter's Laboratory", ytId: "WU5XKb12DWY", era: "1990s", net: "Cartoon Network", year: 1996 },
   { name: "Johnny Bravo", era: "1990s", net: "Cartoon Network", year: 1997 },
   { name: "The Powerpuff Girls", era: "1990s", net: "Cartoon Network", year: 1998 },
   { name: "Cow and Chicken", era: "1990s", net: "Cartoon Network", year: 1997 },
   { name: "I Am Weasel", era: "1990s", net: "Cartoon Network", year: 1997 },
-  { name: "Courage the Cowardly Dog", era: "1990s", net: "Cartoon Network", year: 1999 },
-  { name: "Ed Edd n Eddy", era: "1990s", net: "Cartoon Network", year: 1999 },
+  { name: "Courage the Cowardly Dog", ytId: "BSbMhd1nXiE", era: "1990s", net: "Cartoon Network", year: 1999 },
+  { name: "Ed Edd n Eddy", ytId: "WF_XSDHK7Gc", era: "1990s", net: "Cartoon Network", year: 1999 },
   { name: "What a Cartoon!", era: "1990s", net: "Cartoon Network", year: 1995 },
   { name: "Recess cartoon", era: "1990s", net: "ABC", year: 1997 },
   { name: "Pepper Ann", era: "1990s", net: "ABC", year: 1997 },
   { name: "The Weekenders", era: "1990s", net: "ABC", year: 2000 },
   { name: "Taz-Mania", era: "1990s", net: "Fox Kids", year: 1991 },
-  { name: "Beetlejuice animated", era: "1990s", net: "ABC", year: 1989 },
-  { name: "Bill Nye the Science Guy", era: "1990s", net: "Syndicated", year: 1993 },
-  { name: "Captain Planet and the Planeteers", era: "1990s", net: "TBS", year: 1990 },
+  { name: "Beetlejuice animated", ytId: "iI-Yy5z1h3k", era: "1990s", net: "ABC", year: 1989 },
+  { name: "Bill Nye the Science Guy", ytId: "MdvOtLbvi2o", era: "1990s", net: "Syndicated", year: 1993 },
+  { name: "Captain Planet and the Planeteers", ytId: "l4xjKoOIphg", era: "1990s", net: "TBS", year: 1990 },
   { name: "Extreme Ghostbusters", era: "1990s", net: "Syndicated", year: 1997 },
   { name: "The Mask animated series", era: "1990s", net: "CBS", year: 1995 },
-  { name: "Ace Ventura Pet Detective cartoon", era: "1990s", net: "CBS", year: 1995 },
+  { name: "Ace Ventura Pet Detective cartoon", ytId: "WjTDXatmzUE", era: "1990s", net: "CBS", year: 1995 },
   { name: "Men in Black cartoon", era: "1990s", net: "WB", year: 1997 },
-  { name: "Attack of the Killer Tomatoes cartoon", era: "1990s", net: "Fox Kids", year: 1990 },
+  { name: "Attack of the Killer Tomatoes cartoon", ytId: "NfUTC02of5g", era: "1990s", net: "Fox Kids", year: 1990 },
   { name: "Raw Toonage", era: "1990s", net: "CBS", year: 1992 },
   { name: "Pokemon", era: "1990s", net: "Kids WB", year: 1998 },
   { name: "Sonic the Hedgehog SatAM", era: "1990s", net: "ABC", year: 1993 },
-  { name: "Adventures of Sonic the Hedgehog", era: "1990s", net: "Syndicated", year: 1993 },
+  { name: "Adventures of Sonic the Hedgehog", ytId: "5-DPi9UIFTo", era: "1990s", net: "Syndicated", year: 1993 },
   { name: "Sonic Underground", era: "1990s", net: "Syndicated", year: 1999 },
-  { name: "Adventures of Super Mario Bros 3", era: "1990s", net: "NBC", year: 1990 },
+  { name: "Adventures of Super Mario Bros 3", ytId: "KnyYoy3_afY", era: "1990s", net: "NBC", year: 1990 },
   { name: "Super Mario World cartoon", era: "1990s", net: "NBC", year: 1991 },
   { name: "Mega Man cartoon", era: "1990s", net: "Syndicated", year: 1994 },
   { name: "Street Fighter cartoon", era: "1990s", net: "USA Network", year: 1995 },
   { name: "Mortal Kombat Defenders of the Realm", era: "1990s", net: "USA Network", year: 1996 },
-  { name: "Double Dragon cartoon", era: "1990s", net: "ABC", year: 1993 },
-  { name: "Cadillacs and Dinosaurs cartoon", era: "1990s", net: "CBS", year: 1993 },
+  { name: "Double Dragon cartoon", ytId: "n3c2xbYWKY0", era: "1990s", net: "ABC", year: 1993 },
+  { name: "Cadillacs and Dinosaurs cartoon", ytId: "KMMh6QcRaUY", era: "1990s", net: "CBS", year: 1993 },
   { name: "Godzilla The Series 1998", era: "1990s", net: "Fox Kids", year: 1998 },
   { name: "The Real Adventures of Jonny Quest", era: "1990s", net: "Cartoon Network", year: 1996 },
   { name: "Space Ghost Coast to Coast", era: "1990s", net: "Cartoon Network", year: 1994 },
@@ -640,13 +744,13 @@ const SHOWS = [
   { name: "Wild West C.O.W.-Boys of Moo Mesa", era: "1990s", net: "ABC", year: 1992 },
   { name: "The Legend of Prince Valiant", era: "1990s", net: "Fox Kids", year: 1991 },
   { name: "Swamp Thing cartoon", era: "1990s", net: "Fox Kids", year: 1991 },
-  { name: "Conan the Adventurer cartoon", era: "1990s", net: "Syndicated", year: 1992 },
+  { name: "Conan the Adventurer cartoon", ytId: "o1tKKPZcQ5Q", era: "1990s", net: "Syndicated", year: 1992 },
   { name: "Mummies Alive!", era: "1990s", net: "Syndicated", year: 1997 },
   { name: "Iron Man cartoon 1994", era: "1990s", net: "Syndicated", year: 1994 },
   { name: "Fantastic Four 1994", era: "1990s", net: "Syndicated", year: 1994 },
   { name: "The Incredible Hulk 1996", era: "1990s", net: "UPN", year: 1996 },
   { name: "Silver Surfer cartoon", era: "1990s", net: "Fox Kids", year: 1998 },
-  { name: "Avengers United They Stand", era: "1990s", net: "Fox Kids", year: 1999 },
+  { name: "Avengers United They Stand", ytId: "v-O4WpwKIN4", era: "1990s", net: "Fox Kids", year: 1999 },
   { name: "Exosquad", era: "1990s", net: "Syndicated", year: 1993 },
   { name: "Skeleton Warriors", era: "1990s", net: "CBS", year: 1993 },
   { name: "Widget the World Watcher", era: "1990s", net: "Syndicated", year: 1990 },
@@ -654,73 +758,73 @@ const SHOWS = [
   { name: "ProStars cartoon", era: "1990s", net: "NBC", year: 1991 },
   { name: "The Superhuman Samurai Syber-Squad", era: "1990s", net: "Syndicated", year: 1994 },
   { name: "Mighty Max cartoon", era: "1990s", net: "Syndicated", year: 1993 },
-  { name: "Beavis and Butt-Head", era: "1990s", net: "MTV", year: 1993 },
-  { name: "Daria", era: "1990s", net: "MTV", year: 1997 },
+  { name: "Beavis and Butt-Head", ytId: "SDCreLu4inw", era: "1990s", net: "MTV", year: 1993 },
+  { name: "Daria", ytId: "NO10nHd0dHQ", era: "1990s", net: "MTV", year: 1997 },
   { name: "Invader Zim", era: "1990s", net: "Nickelodeon", year: 2001 },
   { name: "The Fairly OddParents", era: "1990s", net: "Nickelodeon", year: 2001 },
   { name: "Jimmy Neutron Boy Genius cartoon", era: "1990s", net: "Nickelodeon", year: 2002 },
 
   // ─── Anime / US TV ───
-  { name: "Dragon Ball Z (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 1996 },
-  { name: "Dragon Ball GT (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2003 },
-  { name: "Dragon Ball (Funimation dub)", era: "Anime / US TV", net: "Syndicated", year: 1995 },
+  { name: "Dragon Ball Z (Toonami)", ytId: "_IBlehND9Sg", era: "Anime / US TV", net: "Cartoon Network", year: 1996 },
+  { name: "Dragon Ball GT (Toonami)", ytId: "0lDjfgWNmyc", era: "Anime / US TV", net: "Cartoon Network", year: 2003 },
+  { name: "Dragon Ball (Funimation dub)", ytId: "mL4ybywQakE", era: "Anime / US TV", net: "Syndicated", year: 1995 },
   { name: "Naruto (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2005 },
-  { name: "Bleach (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2006 },
+  { name: "Bleach (Toonami)", ytId: "xouPZ1JWiw0", era: "Anime / US TV", net: "Cartoon Network", year: 2006 },
   { name: "Inuyasha (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2002 },
   { name: "Sailor Moon (DiC dub)", era: "Anime / US TV", net: "Syndicated", year: 1995 },
-  { name: "Digimon Adventure", era: "Anime / US TV", net: "Fox Kids", year: 1999 },
-  { name: "Digimon Adventure 02", era: "Anime / US TV", net: "Fox Kids", year: 2000 },
-  { name: "Digimon Tamers", era: "Anime / US TV", net: "Fox Kids", year: 2001 },
+  { name: "Digimon Adventure", ytId: "MuhkUzGAeHA", era: "Anime / US TV", net: "Fox Kids", year: 1999 },
+  { name: "Digimon Adventure 02", ytId: "hpIanHhm-ac", era: "Anime / US TV", net: "Fox Kids", year: 2000 },
+  { name: "Digimon Tamers", ytId: "-ZWZIaxlRe4", era: "Anime / US TV", net: "Fox Kids", year: 2001 },
   { name: "Yu-Gi-Oh!", era: "Anime / US TV", net: "Kids WB", year: 2001 },
   { name: "Yu-Gi-Oh! GX", era: "Anime / US TV", net: "Cartoon Network", year: 2005 },
-  { name: "Cardcaptors", era: "Anime / US TV", net: "Kids WB", year: 2000 },
+  { name: "Cardcaptors", ytId: "1zSW2sBl9rY", era: "Anime / US TV", net: "Kids WB", year: 2000 },
   { name: "Medabots", era: "Anime / US TV", net: "Fox Kids", year: 2001 },
-  { name: "Beyblade", era: "Anime / US TV", net: "Fox Kids", year: 2002 },
+  { name: "Beyblade", ytId: "SZ9C5eIjDVg", era: "Anime / US TV", net: "Fox Kids", year: 2002 },
   { name: "Zatch Bell!", era: "Anime / US TV", net: "Cartoon Network", year: 2005 },
   { name: "One Piece (4Kids dub)", era: "Anime / US TV", net: "Fox", year: 2004 },
   { name: "Shaman King (4Kids dub)", era: "Anime / US TV", net: "Fox", year: 2003 },
   { name: "Kirby Right Back at Ya!", era: "Anime / US TV", net: "Fox", year: 2002 },
   { name: "F-Zero GP Legend", era: "Anime / US TV", net: "Fox", year: 2004 },
-  { name: "Hamtaro", era: "Anime / US TV", net: "Cartoon Network", year: 2002 },
+  { name: "Hamtaro", ytId: "3EiEX4tmCfY", era: "Anime / US TV", net: "Cartoon Network", year: 2002 },
   { name: "Tenchi Muyo! (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2000 },
   { name: "Outlaw Star (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2001 },
-  { name: "Big O (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2001 },
+  { name: "Big O (Toonami)", ytId: "O_a4-kKsft8", era: "Anime / US TV", net: "Cartoon Network", year: 2001 },
   { name: "Ronin Warriors", era: "Anime / US TV", net: "Syndicated", year: 1995 },
   { name: "G Gundam (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2002 },
   { name: "Gundam Wing (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2000 },
-  { name: "Mobile Suit Gundam (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2001 },
+  { name: "Mobile Suit Gundam (Toonami)", ytId: "y9q0YX3E-o4", era: "Anime / US TV", net: "Cartoon Network", year: 2001 },
   { name: "Voltron (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2000 },
   { name: "Rurouni Kenshin (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2003 },
   { name: "YuYu Hakusho (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2002 },
-  { name: "Cyborg 009 (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2003 },
-  { name: "Astro Boy 2003 (Cartoon Network)", era: "Anime / US TV", net: "Cartoon Network", year: 2004 },
+  { name: "Cyborg 009 (Toonami)", ytId: "uf_ESw06aHY", era: "Anime / US TV", net: "Cartoon Network", year: 2003 },
+  { name: "Astro Boy 2003 (Cartoon Network)", ytId: "2Gtt98V4ypQ", era: "Anime / US TV", net: "Cartoon Network", year: 2004 },
   { name: "Fullmetal Alchemist (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2004 },
   { name: "Wolf's Rain (Toonami)", era: "Anime / US TV", net: "Cartoon Network", year: 2004 },
-  { name: "FLCL (Adult Swim)", era: "Anime / US TV", net: "Adult Swim", year: 2003 },
+  { name: "FLCL (Adult Swim)", ytId: "Uh3lmE52GVc", era: "Anime / US TV", net: "Adult Swim", year: 2003 },
   { name: "Trigun (Adult Swim)", era: "Anime / US TV", net: "Adult Swim", year: 2003 },
-  { name: "Cowboy Bebop (Adult Swim)", era: "Anime / US TV", net: "Adult Swim", year: 2001 },
+  { name: "Cowboy Bebop (Adult Swim)", ytId: "UFFa0QoHWvE", era: "Anime / US TV", net: "Adult Swim", year: 2001 },
   { name: "Ghost in the Shell Stand Alone Complex (Adult Swim)", era: "Anime / US TV", net: "Adult Swim", year: 2004 },
   { name: "Neon Genesis Evangelion (Adult Swim)", era: "Anime / US TV", net: "Adult Swim", year: 2005 },
-  { name: "Eureka Seven (Adult Swim)", era: "Anime / US TV", net: "Adult Swim", year: 2006 },
+  { name: "Eureka Seven (Adult Swim)", ytId: "bhh01s6jOPY", era: "Anime / US TV", net: "Adult Swim", year: 2006 },
   { name: "Samurai Champloo (Adult Swim)", era: "Anime / US TV", net: "Adult Swim", year: 2005 },
   { name: "Paranoia Agent (Adult Swim)", era: "Anime / US TV", net: "Adult Swim", year: 2004 },
   { name: "Pokemon Diamond and Pearl", era: "Anime / US TV", net: "Cartoon Network", year: 2007 },
   { name: "Naruto Shippuden (Disney XD)", era: "Anime / US TV", net: "Disney XD", year: 2009 },
-  { name: "Dragon Ball Super (Toonami)", era: "Anime / US TV", net: "Adult Swim", year: 2017 },
-  { name: "Attack on Titan (Toonami)", era: "Anime / US TV", net: "Adult Swim", year: 2014 },
-  { name: "Hunter x Hunter (Toonami)", era: "Anime / US TV", net: "Adult Swim", year: 2016 },
+  { name: "Dragon Ball Super (Toonami)", ytId: "7NLwURb4pgE", era: "Anime / US TV", net: "Adult Swim", year: 2017 },
+  { name: "Attack on Titan (Toonami)", ytId: "8UlNp7n3biE", era: "Anime / US TV", net: "Adult Swim", year: 2014 },
+  { name: "Hunter x Hunter (Toonami)", ytId: "eKoD2CRr_KA", era: "Anime / US TV", net: "Adult Swim", year: 2016 },
   { name: "Sword Art Online (Toonami)", era: "Anime / US TV", net: "Adult Swim", year: 2017 },
   { name: "Tokyo Ghoul (Toonami)", era: "Anime / US TV", net: "Adult Swim", year: 2018 },
-  { name: "Black Clover (Toonami)", era: "Anime / US TV", net: "Adult Swim", year: 2019 },
+  { name: "Black Clover (Toonami)", ytId: "xzGH_mUfDzI", era: "Anime / US TV", net: "Adult Swim", year: 2019 },
   { name: "My Hero Academia (Toonami)", era: "Anime / US TV", net: "Adult Swim", year: 2018 },
-  { name: "Demon Slayer (Toonami)", era: "Anime / US TV", net: "Adult Swim", year: 2021 },
+  { name: "Demon Slayer (Toonami)", ytId: "AOoAaOxuz2E", era: "Anime / US TV", net: "Adult Swim", year: 2021 },
   { name: "JoJo's Bizarre Adventure (Toonami)", era: "Anime / US TV", net: "Adult Swim", year: 2016 },
   { name: "Fire Force (Toonami)", era: "Anime / US TV", net: "Adult Swim", year: 2020 },
-  { name: "Bakugan Battle Brawlers", era: "Anime / US TV", net: "Cartoon Network", year: 2008 },
+  { name: "Bakugan Battle Brawlers", ytId: "mf8dusSJUXw", era: "Anime / US TV", net: "Cartoon Network", year: 2008 },
   { name: "Sonic X", era: "Anime / US TV", net: "4Kids TV", year: 2003 },
   { name: "Tokyo Mew Mew (Mew Mew Power)", era: "Anime / US TV", net: "4Kids TV", year: 2005 },
   { name: "Winx Club", era: "Anime / US TV", net: "4Kids TV", year: 2004 },
-  { name: "Dinosaur King", era: "Anime / US TV", net: "4Kids TV", year: 2008 },
+  { name: "Dinosaur King", ytId: "zT-8P6KwcII", era: "Anime / US TV", net: "4Kids TV", year: 2008 },
 
   // ─── 2000s ───
   { name: "Foster's Home for Imaginary Friends", era: "2000s", net: "Cartoon Network", year: 2004 },
@@ -730,27 +834,27 @@ const SHOWS = [
   { name: "Justice League", era: "2000s", net: "Cartoon Network", year: 2001 },
   { name: "Teen Titans cartoon", era: "2000s", net: "Cartoon Network", year: 2003 },
   { name: "Fillmore!", era: "2000s", net: "ABC Kids", year: 2002 },
-  { name: "Dave the Barbarian", era: "2000s", net: "Disney Channel", year: 2004 },
+  { name: "Dave the Barbarian", ytId: "oYl8k4outug", era: "2000s", net: "Disney Channel", year: 2004 },
   { name: "Lilo and Stitch The Series", era: "2000s", net: "Disney Channel", year: 2003 },
   { name: "Kim Possible", era: "2000s", net: "Disney Channel", year: 2002 },
-  { name: "American Dragon Jake Long", era: "2000s", net: "Disney Channel", year: 2005 },
+  { name: "American Dragon Jake Long", ytId: "70YWPxnntyM", era: "2000s", net: "Disney Channel", year: 2005 },
   { name: "The Proud Family", era: "2000s", net: "Disney Channel", year: 2001 },
-  { name: "Buzz Lightyear of Star Command", era: "2000s", net: "Disney Channel", year: 2000 },
+  { name: "Buzz Lightyear of Star Command", ytId: "YyVRgnzVBSQ", era: "2000s", net: "Disney Channel", year: 2000 },
   { name: "Lizzie McGuire animated", era: "2000s", net: "Disney Channel", year: 2001 },
   { name: "Phineas and Ferb", era: "2000s", net: "Disney Channel", year: 2007 },
   { name: "The Replacements cartoon", era: "2000s", net: "Disney Channel", year: 2006 },
-  { name: "Codename Kids Next Door", era: "2000s", net: "Cartoon Network", year: 2002 },
+  { name: "Codename Kids Next Door", ytId: "CrTqDq9CI9U", era: "2000s", net: "Cartoon Network", year: 2002 },
   { name: "The Grim Adventures of Billy and Mandy", era: "2000s", net: "Cartoon Network", year: 2003 },
   { name: "My Gym Partner's a Monkey", era: "2000s", net: "Cartoon Network", year: 2005 },
   { name: "The Life and Times of Juniper Lee", era: "2000s", net: "Cartoon Network", year: 2005 },
-  { name: "Ben 10 original", era: "2000s", net: "Cartoon Network", year: 2005 },
+  { name: "Ben 10 original", ytId: "7TbN1l2sLx4", era: "2000s", net: "Cartoon Network", year: 2005 },
   { name: "Generator Rex", era: "2000s", net: "Cartoon Network", year: 2010 },
   { name: "Mucha Lucha", era: "2000s", net: "Kids WB", year: 2002 },
   { name: "Xiaolin Showdown", era: "2000s", net: "Kids WB", year: 2003 },
   { name: "Megas XLR", era: "2000s", net: "Cartoon Network", year: 2004 },
   { name: "Whatever Happened to Robot Jones", era: "2000s", net: "Cartoon Network", year: 2002 },
   { name: "Hi Hi Puffy AmiYumi", era: "2000s", net: "Cartoon Network", year: 2004 },
-  { name: "Chowder cartoon", era: "2000s", net: "Cartoon Network", year: 2007 },
+  { name: "Chowder cartoon", ytId: "1RyLtUu9-Dk", era: "2000s", net: "Cartoon Network", year: 2007 },
   { name: "The Marvelous Misadventures of Flapjack", era: "2000s", net: "Cartoon Network", year: 2008 },
   { name: "Star Wars Clone Wars 2003", era: "2000s", net: "Cartoon Network", year: 2003 },
   { name: "Star Wars The Clone Wars 2008", era: "2000s", net: "Cartoon Network", year: 2008 },
@@ -766,30 +870,30 @@ const SHOWS = [
   { name: "W.I.T.C.H. cartoon", era: "2000s", net: "Toon Disney", year: 2004 },
   { name: "Super Robot Monkey Team Hyperforce Go!", era: "2000s", net: "Toon Disney", year: 2004 },
   { name: "Yin Yang Yo!", era: "2000s", net: "Toon Disney", year: 2006 },
-  { name: "Class of the Titans", era: "2000s", net: "Cartoon Network", year: 2005 },
-  { name: "Danny Phantom", era: "2000s", net: "Nickelodeon", year: 2004 },
+  { name: "Class of the Titans", ytId: "EhXAG6Uk3bo", era: "2000s", net: "Cartoon Network", year: 2005 },
+  { name: "Danny Phantom", ytId: "IOZsinCUxLU", era: "2000s", net: "Nickelodeon", year: 2004 },
   { name: "My Life as a Teenage Robot", era: "2000s", net: "Nickelodeon", year: 2003 },
   { name: "The Adventures of Jimmy Neutron", era: "2000s", net: "Nickelodeon", year: 2002 },
-  { name: "Catscratch", era: "2000s", net: "Nickelodeon", year: 2005 },
+  { name: "Catscratch", ytId: "0RH2kuH1hlY", era: "2000s", net: "Nickelodeon", year: 2005 },
   { name: "The Mighty B!", era: "2000s", net: "Nickelodeon", year: 2008 },
-  { name: "El Tigre The Adventures of Manny Rivera", era: "2000s", net: "Nickelodeon", year: 2007 },
-  { name: "Back at the Barnyard", era: "2000s", net: "Nickelodeon", year: 2007 },
-  { name: "Avatar The Last Airbender", era: "2000s", net: "Nickelodeon", year: 2005 },
+  { name: "El Tigre The Adventures of Manny Rivera", ytId: "m04b7gjKBRw", era: "2000s", net: "Nickelodeon", year: 2007 },
+  { name: "Back at the Barnyard", ytId: "YMH8EGi83lw", era: "2000s", net: "Nickelodeon", year: 2007 },
+  { name: "Avatar The Last Airbender", ytId: "zMrMDvW5MaM", era: "2000s", net: "Nickelodeon", year: 2005 },
   { name: "The Legend of Korra", era: "2000s", net: "Nickelodeon", year: 2012 },
   { name: "Evil Con Carne", era: "2000s", net: "Cartoon Network", year: 2003 },
   { name: "Squirrel Boy", era: "2000s", net: "Cartoon Network", year: 2006 },
   { name: "Kick Buttowski Suburban Daredevil", era: "2000s", net: "Disney XD", year: 2010 },
-  { name: "Fish Hooks cartoon", era: "2000s", net: "Disney Channel", year: 2010 },
+  { name: "Fish Hooks cartoon", ytId: "QnEEoRaagXI", era: "2000s", net: "Disney Channel", year: 2010 },
   { name: "Wander Over Yonder", era: "2000s", net: "Disney Channel", year: 2013 },
   { name: "Randy Cunningham 9th Grade Ninja", era: "2000s", net: "Disney XD", year: 2012 },
   { name: "The Batman 2004", era: "2000s", net: "Kids WB", year: 2004 },
-  { name: "Batman Brave and the Bold", era: "2000s", net: "Cartoon Network", year: 2008 },
+  { name: "Batman Brave and the Bold", ytId: "LLFtgDd16Wg", era: "2000s", net: "Cartoon Network", year: 2008 },
   { name: "The Spectacular Spider-Man", era: "2000s", net: "Kids WB", year: 2008 },
   { name: "Wolverine and the X-Men", era: "2000s", net: "Nicktoons", year: 2009 },
   { name: "The Super Hero Squad Show", era: "2000s", net: "Cartoon Network", year: 2009 },
   { name: "Sym-Bionic Titan", era: "2000s", net: "Cartoon Network", year: 2010 },
-  { name: "Ben 10 Alien Force", era: "2000s", net: "Cartoon Network", year: 2008 },
-  { name: "Ben 10 Ultimate Alien", era: "2000s", net: "Cartoon Network", year: 2010 },
+  { name: "Ben 10 Alien Force", ytId: "oOpcwoAX364", era: "2000s", net: "Cartoon Network", year: 2008 },
+  { name: "Ben 10 Ultimate Alien", ytId: "bHjDfn9zOyw", era: "2000s", net: "Cartoon Network", year: 2010 },
   { name: "Secret Saturdays", era: "2000s", net: "Cartoon Network", year: 2008 },
   { name: "Storm Hawks", era: "2000s", net: "Cartoon Network", year: 2007 },
   { name: "Transformers Animated", era: "2000s", net: "Cartoon Network", year: 2007 },
@@ -800,22 +904,22 @@ const SHOWS = [
   { name: "Milo Murphy's Law", era: "2010s", net: "Disney XD", year: 2016 },
   { name: "Penn Zero Part-Time Hero", era: "2010s", net: "Disney XD", year: 2014 },
   { name: "DuckTales 2017", era: "2010s", net: "Disney XD", year: 2017 },
-  { name: "Big Hero 6 The Series", era: "2010s", net: "Disney Channel", year: 2017 },
+  { name: "Big Hero 6 The Series", ytId: "vCLjb_YMBtw", era: "2010s", net: "Disney Channel", year: 2017 },
   { name: "Tangled The Series", era: "2010s", net: "Disney Channel", year: 2017 },
   { name: "The Loud House", era: "2010s", net: "Nickelodeon", year: 2016 },
   { name: "Harvey Beaks", era: "2010s", net: "Nickelodeon", year: 2015 },
-  { name: "Bunsen is a Beast", era: "2010s", net: "Nickelodeon", year: 2017 },
+  { name: "Bunsen is a Beast", ytId: "fX9rMPquZGI", era: "2010s", net: "Nickelodeon", year: 2017 },
   { name: "Rise of the Teenage Mutant Ninja Turtles", era: "2010s", net: "Nickelodeon", year: 2018 },
   { name: "TMNT 2012 cartoon", era: "2010s", net: "Nickelodeon", year: 2012 },
-  { name: "Breadwinners", era: "2010s", net: "Nickelodeon", year: 2014 },
+  { name: "Breadwinners", ytId: "ry8IfR6j6qU", era: "2010s", net: "Nickelodeon", year: 2014 },
   { name: "Sanjay and Craig", era: "2010s", net: "Nickelodeon", year: 2013 },
   { name: "Pig Goat Banana Cricket", era: "2010s", net: "Nickelodeon", year: 2015 },
   { name: "Teen Titans Go!", era: "2010s", net: "Cartoon Network", year: 2013 },
   { name: "The Amazing World of Gumball", era: "2010s", net: "Cartoon Network", year: 2011 },
-  { name: "Adventure Time", era: "2010s", net: "Cartoon Network", year: 2010 },
+  { name: "Adventure Time", ytId: "xXQNdUpCQzw", era: "2010s", net: "Cartoon Network", year: 2010 },
   { name: "Regular Show", era: "2010s", net: "Cartoon Network", year: 2010 },
   { name: "Steven Universe", era: "2010s", net: "Cartoon Network", year: 2013 },
-  { name: "Clarence cartoon", era: "2010s", net: "Cartoon Network", year: 2014 },
+  { name: "Clarence cartoon", ytId: "e5TwSVO1SVo", era: "2010s", net: "Cartoon Network", year: 2014 },
   { name: "Uncle Grandpa", era: "2010s", net: "Cartoon Network", year: 2013 },
   { name: "Over the Garden Wall", era: "2010s", net: "Cartoon Network", year: 2014 },
   { name: "We Bare Bears", era: "2010s", net: "Cartoon Network", year: 2015 },
@@ -823,13 +927,13 @@ const SHOWS = [
   { name: "Craig of the Creek", era: "2010s", net: "Cartoon Network", year: 2018 },
   { name: "Victor and Valentino", era: "2010s", net: "Cartoon Network", year: 2019 },
   { name: "ThunderCats Roar", era: "2010s", net: "Cartoon Network", year: 2019 },
-  { name: "Ben 10 2016 reboot", era: "2010s", net: "Cartoon Network", year: 2016 },
+  { name: "Ben 10 2016 reboot", ytId: "7TbN1l2sLx4", era: "2010s", net: "Cartoon Network", year: 2016 },
   { name: "Infinity Train", era: "2010s", net: "Cartoon Network", year: 2019 },
   { name: "Summer Camp Island", era: "2010s", net: "Cartoon Network", year: 2018 },
   { name: "Voltron Legendary Defender", era: "2010s", net: "Netflix", year: 2016 },
   { name: "She-Ra and the Princesses of Power 2018", era: "2010s", net: "Netflix", year: 2018 },
   { name: "Trollhunters Tales of Arcadia", era: "2010s", net: "Netflix", year: 2016 },
-  { name: "3Below Tales of Arcadia", era: "2010s", net: "Netflix", year: 2018 },
+  { name: "3Below Tales of Arcadia", ytId: "g11oW0TCzOA", era: "2010s", net: "Netflix", year: 2018 },
   { name: "Wizards Tales of Arcadia", era: "2010s", net: "Netflix", year: 2020 },
   { name: "The Dragon Prince", era: "2010s", net: "Netflix", year: 2018 },
   { name: "Miraculous Ladybug", era: "2010s", net: "Netflix / Disney", year: 2015 },
@@ -844,24 +948,24 @@ const SHOWS = [
   { name: "Thunderbirds Are Go!", era: "2010s", net: "ITV / Amazon", year: 2015 },
   { name: "Star Wars Rebels", era: "2010s", net: "Disney XD", year: 2014 },
   { name: "Star Wars Resistance", era: "2010s", net: "Disney Channel", year: 2018 },
-  { name: "Guardians of the Galaxy cartoon", era: "2010s", net: "Disney XD", year: 2015 },
-  { name: "Avengers Assemble cartoon", era: "2010s", net: "Disney XD", year: 2013 },
+  { name: "Guardians of the Galaxy cartoon", ytId: "yfL76PqAF0s", era: "2010s", net: "Disney XD", year: 2015 },
+  { name: "Avengers Assemble cartoon", ytId: "o-dUgFg1BiI", era: "2010s", net: "Disney XD", year: 2013 },
   { name: "Ultimate Spider-Man cartoon", era: "2010s", net: "Disney XD", year: 2012 },
   { name: "Hulk and the Agents of SMASH", era: "2010s", net: "Disney XD", year: 2013 },
   { name: "Spider-Man 2017 cartoon", era: "2010s", net: "Disney XD", year: 2017 },
   { name: "Wabbit A Looney Tunes Production", era: "2010s", net: "Boomerang", year: 2015 },
-  { name: "Be Cool Scooby-Doo!", era: "2010s", net: "Boomerang", year: 2015 },
+  { name: "Be Cool Scooby-Doo!", ytId: "U293vY4u4ME", era: "2010s", net: "Boomerang", year: 2015 },
   { name: "The Tom and Jerry Show 2014", era: "2010s", net: "Boomerang", year: 2014 },
-  { name: "Bunnicula cartoon", era: "2010s", net: "Boomerang", year: 2016 },
+  { name: "Bunnicula cartoon", ytId: "9Xkwv0qwGU4", era: "2010s", net: "Boomerang", year: 2016 },
   { name: "Mighty Magiswords", era: "2010s", net: "Cartoon Network", year: 2016 },
   { name: "Kipo and the Age of Wonderbeasts", era: "2010s", net: "Netflix", year: 2020 },
 
   // ─── 2020s ───
   { name: "The Owl House", era: "2020s", net: "Disney Channel", year: 2020 },
-  { name: "Amphibia", era: "2020s", net: "Disney Channel", year: 2019 },
-  { name: "Big City Greens", era: "2020s", net: "Disney Channel", year: 2018 },
+  { name: "Amphibia", ytId: "OuMysCU98dQ", era: "2020s", net: "Disney Channel", year: 2019 },
+  { name: "Big City Greens", ytId: "W5ahGIHfyCE", era: "2020s", net: "Disney Channel", year: 2018 },
   { name: "Kiff", era: "2020s", net: "Disney Channel", year: 2023 },
-  { name: "Hamster and Gretel", era: "2020s", net: "Disney Channel", year: 2022 },
+  { name: "Hamster and Gretel", ytId: "JyOQmBseWfQ", era: "2020s", net: "Disney Channel", year: 2022 },
   { name: "Moon Girl and Devil Dinosaur", era: "2020s", net: "Disney Channel", year: 2023 },
   { name: "Star Wars The Bad Batch", era: "2020s", net: "Disney+", year: 2021 },
   { name: "Star Wars Young Jedi Adventures", era: "2020s", net: "Disney+", year: 2023 },
@@ -878,22 +982,22 @@ const SHOWS = [
   { name: "Transformers EarthSpark", era: "2020s", net: "Paramount+", year: 2022 },
   { name: "Power Rangers Dino Fury", era: "2020s", net: "Netflix", year: 2021 },
   { name: "Power Rangers Cosmic Fury", era: "2020s", net: "Netflix", year: 2023 },
-  { name: "Batwheels", era: "2020s", net: "Cartoon Network", year: 2022 },
+  { name: "Batwheels", ytId: "HTycXKeAZwU", era: "2020s", net: "Cartoon Network", year: 2022 },
   { name: "My Adventures with Superman", era: "2020s", net: "Adult Swim", year: 2023 },
   { name: "Unicorn: Warriors Eternal", era: "2020s", net: "Adult Swim", year: 2023 },
   { name: "Invincible animated", era: "2020s", net: "Amazon", year: 2021 },
-  { name: "Hazbin Hotel", era: "2020s", net: "Amazon", year: 2024 },
+  { name: "Hazbin Hotel", ytId: "lyDUfn5f-Lc", era: "2020s", net: "Amazon", year: 2024 },
   { name: "The Cuphead Show!", era: "2020s", net: "Netflix", year: 2022 },
   { name: "Masters of the Universe Revelation", era: "2020s", net: "Netflix", year: 2021 },
   { name: "He-Man and the Masters of the Universe 2021", era: "2020s", net: "Netflix", year: 2021 },
-  { name: "Centaurworld", era: "2020s", net: "Netflix", year: 2021 },
-  { name: "Kid Cosmic", era: "2020s", net: "Netflix", year: 2021 },
+  { name: "Centaurworld", ytId: "KmwS89nkcTk", era: "2020s", net: "Netflix", year: 2021 },
+  { name: "Kid Cosmic", ytId: "aaERa1tnabk", era: "2020s", net: "Netflix", year: 2021 },
   { name: "Inside Job cartoon", era: "2020s", net: "Netflix", year: 2021 },
-  { name: "Carmen Sandiego cartoon", era: "2020s", net: "Netflix", year: 2019 },
+  { name: "Carmen Sandiego cartoon", ytId: "E9aDMuBjR7Q", era: "2020s", net: "Netflix", year: 2019 },
   { name: "Disenchantment", era: "2020s", net: "Netflix", year: 2018 },
   { name: "Primal", era: "2020s", net: "Adult Swim", year: 2019 },
   { name: "Smiling Friends", era: "2020s", net: "Adult Swim", year: 2022 },
-  { name: "Common Side Effects", era: "2020s", net: "Adult Swim", year: 2025 },
+  { name: "Common Side Effects", ytId: "4SWrGQVggLo", era: "2020s", net: "Adult Swim", year: 2025 },
   { name: "Scavengers Reign", era: "2020s", net: "Adult Swim", year: 2023 },
   { name: "Ninjago Dragons Rising", era: "2020s", net: "Netflix", year: 2023 },
   { name: "Dragon Ball Daima (Toonami)", era: "2020s", net: "Adult Swim", year: 2024 },
@@ -1020,8 +1124,15 @@ function playShow(show){
   const frame=document.getElementById('ytFrame');
   document.getElementById('idleScreen').style.display='none';
   frame.style.display='block';
-  const q=encodeURIComponent(show.name+' cartoon opening theme song');
-  frame.src='https://www.youtube.com/embed?listType=search&list='+q+'&autoplay=1';
+  // Use direct video ID if we have it, otherwise fall back to search
+  if(show.ytId){
+    frame.src='https://www.youtube.com/embed/'+show.ytId+'?autoplay=1&rel=0';
+  } else {
+    const q=encodeURIComponent(show.name+' cartoon opening theme song');
+    frame.src='https://www.youtube.com/embed?listType=search&list='+q+'&autoplay=1';
+  }
+  // Auto-switch to player tab on mobile
+  if (window.innerWidth <= 768) switchMobTab('player');
   updateFavBtn();
   updateStars();
   renderList();
@@ -1242,7 +1353,7 @@ function renderList(){
     item.innerHTML=
       '<div class="item-num">'+(i+1)+'</div>'+
       '<div class="item-info">'+
-        '<div class="item-name">'+show.name+(isFav?' <span style="color:#ff6b9d;font-size:.7rem;">♥</span>':'')+'</div>'+
+        '<div class="item-name">'+(show.ytId?'':'<span title="No theme link yet" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#e94560;opacity:.7;margin-right:4px;vertical-align:middle;"></span>')+show.name+(isFav?' <span style="color:#ff6b9d;font-size:.7rem;">♥</span>':'')+'</div>'+
         '<div class="item-meta"><span>'+(show.year?show.year+' · ':'')+show.era+'</span><span class="net-tag">'+show.net+'</span></div>'+
       '</div>'+
       '<div class="item-actions">'+
@@ -1323,8 +1434,28 @@ suggestBtn.onmouseout=()=>suggestBtn.style.color='var(--muted)';
 suggestBtn.onclick=openSuggestModal;
 document.querySelector('.sidebar').appendChild(suggestBtn);
 
+// ── Mobile tab switching ──
+function switchMobTab(tab) {
+  const map = { shows: '.sidebar', player: '.player-area', queue: '.queue-panel' };
+  const idMap = { shows: 'mobTabShows', player: 'mobTabPlayer', queue: 'mobTabQueue' };
+  Object.keys(map).forEach(t => {
+    document.querySelector(map[t]).classList.toggle('mob-active', t === tab);
+    document.getElementById(idMap[t]).classList.toggle('active', t === tab);
+  });
+}
+
+// Init mobile — shows tab active by default
+if (window.innerWidth <= 768) {
+  document.querySelector('.sidebar').classList.add('mob-active');
+}
+
+window.addEventListener('resize', () => {
+  if (window.innerWidth <= 768) {
+    const anyActive = document.querySelector('.mob-active');
+    if (!anyActive) document.querySelector('.sidebar').classList.add('mob-active');
+  }
+});
 // ── Init ──
-buildPills('eraPills',ALL_ERAS,activeEras,'era');
 // Network cascading dropdowns
 function getAvailableNets(){
   return ALL_NETS.filter(n=>n!=='All'&&!activeNets.has(n));
