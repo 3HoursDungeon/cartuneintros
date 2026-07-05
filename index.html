@@ -5,68 +5,109 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CarTune Intros</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Oswald:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap');
 :root {
-  --bg:#1a1a2e; --surface:#16213e; --card:#0f3460;
-  --a1:#e94560; --a2:#f5a623; --a3:#00d2d3; --a4:#7c3aed;
-  --text:#eaeaea; --muted:#8892a4;
+  /* ── Vintage design system ── */
+  --paper:#f4ead2;      /* cream page */
+  --paper2:#e7d9b8;     /* aged cream */
+  --ink:#2c2318;        /* warm print black */
+  --ink-soft:#8a7a60;   /* faded print */
+  --red:#c0392b;        /* masthead red (era-shifted) */
+  --gold:#d9a441;
+  --teal:#2e7f74;
+  --room:#241a12;       /* living-room dark */
+  --wood1:#3f2a1a; --wood2:#5d3f28; --wood3:#7d5533;
+
+  /* legacy hooks used across components */
+  --bg:var(--room); --surface:var(--paper); --card:var(--paper2);
+  --a1:var(--red); --a2:var(--gold); --a3:var(--teal); --a4:#7c5cae;
+  --text:#f4ead2; --muted:var(--ink-soft);
 }
+
+/* ── Era palettes: browsing/playing an era subtly retunes the whole set ── */
+body[data-era="1940s"], body[data-era="1950s"] {
+  --paper:#efeae0; --paper2:#dcd4c4; --red:#4e4a42; --gold:#8f877a; --teal:#6e675c;
+  --room:#1b1916; --wood1:#33302a; --wood2:#4a453c; --wood3:#5f5a4f;
+}
+body[data-era="1960s"] { --red:#c1440e; --gold:#e8a33d; --teal:#7d9a2e; --paper:#f7ecc9; --paper2:#ecdca4; }
+body[data-era="1970s"] { --red:#b34a1f; --gold:#d9a441; --teal:#5f7a34; --room:#291c11; --wood1:#452c17; --wood2:#66401f; --wood3:#8a5a2b; }
+body[data-era="1980s"] {
+  --red:#d81b7a; --gold:#f2b632; --teal:#00a6c0;
+  --room:#191230; --wood1:#241a45; --wood2:#332561; --wood3:#463585;
+}
+body[data-era="1990s"] {
+  --red:#8c37c0; --gold:#a8cf3a; --teal:#12a48c;
+  --room:#121212; --wood1:#1f1f1f; --wood2:#2c2c2c; --wood3:#3c3c3c;
+}
+body[data-era="2000s"] {
+  --paper:#eef0ee; --paper2:#dbe0dc; --red:#0f6ab4; --gold:#7fa3bd; --teal:#3399cc;
+  --room:#131a20; --wood1:#1e2a33; --wood2:#2a3a46; --wood3:#3a4e5c;
+}
+body[data-era="2010s"] { --red:#e2574c; --gold:#f0b429; --teal:#12a4a6; --paper:#f7f2e9; --paper2:#eae2d2; }
+body[data-era="2020s"] { --red:#6d4fd2; --gold:#e5a63c; --teal:#3ec6a8; --room:#171320; --wood1:#241d33; --wood2:#322947; --wood3:#43385e; }
+body[data-era="Anime / US TV"] { --red:#e63946; --gold:#f4a300; --teal:#3d5a80; }
+body[data-era="Adult Swim"] {
+  --paper:#e9e9e9; --paper2:#d3d3d3; --ink:#111; --ink-soft:#666;
+  --red:#111; --gold:#8a8a8a; --teal:#555;
+  --room:#000; --wood1:#0a0a0a; --wood2:#151515; --wood3:#222;
+}
+
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;}
-body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.03) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;z-index:0;}
+body{font-family:'Nunito',sans-serif;background:var(--room);color:var(--text);height:100vh;overflow:hidden;transition:background-color .6s ease;}
+/* faint warm halftone over the room */
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(255,214,150,.05) 2px,transparent 2px),radial-gradient(circle,rgba(255,240,210,.03) 1px,transparent 1px);background-size:34px 34px,17px 17px;background-position:0 0,17px 17px;pointer-events:none;z-index:0;}
 .app{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh;}
 
-/* HEADER */
-header{background:linear-gradient(135deg,#e94560 0%,#f5a623 50%,#e94560 100%);background-size:200%;animation:gs 6s ease infinite;padding:9px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 4px 20px rgba(233,69,96,.4);}
-@keyframes gs{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
-.logo{font-family:'Bangers',cursive;font-size:1.7rem;letter-spacing:2px;color:#fff;text-shadow:3px 3px 0 rgba(0,0,0,.3);white-space:nowrap;}
-.logo b{color:#1a1a2e;}
-.hstats{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.9);text-align:right;}
+/* ── HEADER: TV Guide masthead ── */
+header{background:var(--paper);background-image:radial-gradient(circle,rgba(44,35,24,.06) 1px,transparent 1px);background-size:7px 7px;padding:8px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:4px solid var(--red);box-shadow:0 4px 18px rgba(0,0,0,.55);position:relative;overflow:hidden;transition:background-color .6s ease,border-color .6s ease;}
+.logo{font-family:'Alfa Slab One',serif;font-size:1.3rem;letter-spacing:.5px;color:var(--paper);background:var(--red);padding:3px 14px 5px;border-radius:7px;box-shadow:2.5px 2.5px 0 var(--ink);white-space:nowrap;transition:background-color .6s ease;}
+.logo b{color:var(--gold);font-weight:400;}
+.hstats{font-family:'Oswald',sans-serif;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--ink-soft);text-align:right;}
 
 /* MAIN */
 .main{display:flex;flex:1;overflow:hidden;}
 
-/* SIDEBAR */
-.sidebar{width:280px;flex-shrink:0;display:flex;flex-direction:column;background:var(--surface);border-right:2px solid rgba(255,255,255,.05);overflow:hidden;}
+/* ── SIDEBAR: the listings page ── */
+.sidebar{width:280px;flex-shrink:0;display:flex;flex-direction:column;background:var(--paper);background-image:repeating-linear-gradient(0deg,transparent 0 27px,rgba(44,35,24,.045) 27px 28px);border-right:3px solid var(--wood1);overflow:hidden;transition:background-color .6s ease;}
 
-.sb-search{padding:10px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;}
-.sb-search input{width:100%;padding:7px 14px;background:var(--card);border:1.5px solid rgba(255,255,255,.1);border-radius:20px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.83rem;outline:none;transition:border-color .2s;}
-.sb-search input:focus{border-color:var(--a3);}
-.sb-search input::placeholder{color:var(--muted);}
+.sb-search{padding:10px;border-bottom:1.5px solid rgba(44,35,24,.18);flex-shrink:0;}
+.sb-search input{width:100%;padding:7px 12px;background:rgba(255,252,244,.75);border:1.5px solid rgba(44,35,24,.35);border-radius:5px;color:var(--ink);font-family:'Nunito',sans-serif;font-size:.83rem;outline:none;transition:border-color .2s;}
+.sb-search input:focus{border-color:var(--red);}
+.sb-search input::placeholder{color:var(--ink-soft);}
 
 /* Collapsible filter panel */
-.filter-panel{flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.07);}
-.filter-toggle{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);transition:color .15s;user-select:none;}
-.filter-toggle:hover{color:var(--text);}
+.filter-panel{flex-shrink:0;border-bottom:1.5px solid rgba(44,35,24,.18);}
+.filter-toggle{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--ink-soft);transition:color .15s;user-select:none;}
+.filter-toggle:hover{color:var(--red);}
 .filter-toggle .arrow{transition:transform .2s;font-size:.8rem;}
 .filter-toggle.open .arrow{transform:rotate(180deg);}
 .filter-body{padding:0 10px 10px;display:none;}
 .filter-body.open{display:block;}
 
-.filter-search{width:100%;padding:5px 10px;background:var(--bg);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.75rem;outline:none;margin-bottom:7px;transition:border-color .2s;}
-.filter-search:focus{border-color:var(--a3);}
-.filter-search::placeholder{color:var(--muted);}
+.filter-search{width:100%;padding:5px 10px;background:rgba(255,252,244,.75);border:1.5px solid rgba(44,35,24,.3);border-radius:4px;color:var(--ink);font-family:'Nunito',sans-serif;font-size:.75rem;outline:none;margin-bottom:7px;transition:border-color .2s;}
+.filter-search:focus{border-color:var(--red);}
+.filter-search::placeholder{color:var(--ink-soft);}
 
 .pills{display:flex;flex-wrap:wrap;gap:4px;}
-.pill{background:var(--card);border:1.5px solid rgba(255,255,255,.1);color:var(--muted);padding:3px 9px;border-radius:12px;font-size:.68rem;font-weight:700;cursor:pointer;transition:all .15s;font-family:'Nunito',sans-serif;white-space:nowrap;}
-.pill:hover{border-color:rgba(255,255,255,.3);color:var(--text);}
-.pill.on{background:var(--a1);border-color:var(--a1);color:#fff;}
+.pill{background:transparent;border:1.5px solid rgba(44,35,24,.4);color:#6b5c44;padding:3px 9px;border-radius:4px;font-size:.68rem;font-weight:700;cursor:pointer;transition:all .15s;font-family:'Oswald',sans-serif;letter-spacing:.5px;white-space:nowrap;}
+.pill:hover{border-color:var(--red);color:var(--red);}
+.pill.on{background:var(--red);border-color:var(--red);color:var(--paper);}
 .pill.on.anime{background:var(--a4);border-color:var(--a4);}
-.pill.on.net{background:var(--a2);border-color:var(--a2);color:#1a1a2e;}
+.pill.on.net{background:var(--gold);border-color:var(--gold);color:var(--ink);}
 
-.show-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--a1) transparent;}
-.show-item{display:flex;align-items:center;padding:7px 10px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);transition:background .12s;gap:7px;}
-.show-item:hover{background:rgba(255,255,255,.05);}
-.show-item.playing{background:rgba(0,210,211,.12);border-left:3px solid var(--a3);}
-.show-item.queued{background:rgba(245,166,35,.06);border-left:3px solid var(--a2);}
+.show-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--red) transparent;}
+.show-item{display:flex;align-items:center;padding:7px 10px;cursor:pointer;border-bottom:1px dotted rgba(44,35,24,.35);transition:background .12s;gap:7px;}
+.show-item:hover{background:rgba(44,35,24,.06);}
+.show-item.playing{background:rgba(192,57,43,.1);border-left:3px solid var(--red);}
+.show-item.queued{background:rgba(217,164,65,.14);border-left:3px solid var(--gold);}
 .show-item.fav{/* subtle glow if favorited */}
-.item-num{font-size:.62rem;color:var(--muted);width:22px;flex-shrink:0;text-align:right;}
+.item-num{font-family:'Oswald',sans-serif;font-size:.62rem;font-weight:600;color:var(--red);width:22px;flex-shrink:0;text-align:right;}
 .item-info{flex:1;min-width:0;}
-.item-name{font-size:.79rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.show-item.playing .item-name{color:var(--a3);}
-.item-meta{font-size:.6rem;color:var(--muted);display:flex;gap:4px;margin-top:1px;flex-wrap:wrap;}
-.net-tag{background:rgba(255,255,255,.06);padding:0 4px;border-radius:3px;}
-.no-link-dot{width:7px;height:7px;border-radius:50%;background:#e94560;flex-shrink:0;opacity:0.7;margin-right:2px;title:"No theme link yet";}
+.item-name{font-family:'Oswald',sans-serif;font-size:.81rem;font-weight:600;letter-spacing:.3px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.show-item.playing .item-name{color:var(--red);}
+.item-meta{font-size:.6rem;color:var(--ink-soft);display:flex;gap:4px;margin-top:1px;flex-wrap:wrap;}
+.net-tag{background:rgba(44,35,24,.09);padding:0 4px;border-radius:2px;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.5px;}
+.no-link-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;opacity:0.7;margin-right:2px;}
 .item-actions{display:flex;gap:3px;opacity:0;transition:opacity .15s;flex-shrink:0;}
 .show-item:hover .item-actions{opacity:1;}
 @media (hover: none) { .item-actions { opacity: 1; } }
@@ -79,37 +120,40 @@ header{background:linear-gradient(135deg,#e94560 0%,#f5a623 50%,#e94560 100%);ba
     flex-direction: column;
     position: relative;
     height: calc(100vh - 46px);
+    overflow: hidden;
   }
 
   /* Hide all panels by default on mobile */
   .sidebar, .player-area, .queue-panel {
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
+    width: 100% !important;
+    height: 100% !important;
+    display: none !important;
     flex-direction: column;
     overflow: hidden;
+    z-index: 1;
   }
 
   /* Show active tab */
   .sidebar.mob-active,
   .player-area.mob-active,
   .queue-panel.mob-active {
-    display: flex;
+    display: flex !important;
+    z-index: 2;
   }
 
   /* Remove desktop borders */
   .sidebar { border-right: none; }
-  .queue-panel { border-left: none; width: 100%; }
+  .queue-panel { border-left: none; }
 
   /* Bottom tab bar */
   .mob-tabs {
     position: fixed;
     bottom: 0; left: 0; right: 0;
     height: 56px;
-    background: #0a0a1a;
-    border-top: 1.5px solid rgba(255,255,255,.08);
+    background: var(--wood1);
+    border-top: 2px solid rgba(217,164,65,.5);
     display: flex;
     z-index: 50;
   }
@@ -123,159 +167,187 @@ header{background:linear-gradient(135deg,#e94560 0%,#f5a623 50%,#e94560 100%);ba
     gap: 2px;
     background: none;
     border: none;
-    color: var(--muted);
-    font-family: 'Nunito', sans-serif;
+    color: rgba(244,234,210,.55);
+    font-family: 'Oswald', sans-serif;
     font-size: .6rem;
-    font-weight: 800;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     cursor: pointer;
     transition: color .15s;
     border-top: 2px solid transparent;
   }
 
   .mob-tab .tab-icon { font-size: 1.3rem; line-height: 1; }
-  .mob-tab.active { color: var(--a2); border-top-color: var(--a2); }
+  .mob-tab.active { color: var(--gold); border-top-color: var(--gold); }
 
   /* Push content above tab bar */
   .app { padding-bottom: 56px; }
 
   /* Player tweaks on mobile */
   .now-playing { padding: 10px 14px; }
-  .np-title { font-size: 1.3rem; }
+  .np-title { font-size: 1.15rem; }
   .np-controls { gap: 5px; }
   .ctrl-btn { padding: 4px 10px; font-size: .68rem; }
   .iframe-wrap { flex: 1; min-height: 0; }
 
-  /* Sidebar tweaks */
-  .show-list { flex: 1; }
-
-  /* Queue panel tweaks */
-  .queue-panel { height: 100%; }
-  .autoplay-row { margin-bottom: 0; }
-
   /* Header shrink */
   header { padding: 7px 14px; }
-  .logo { font-size: 1.4rem; }
-  .hstats { font-size: .65rem; }
+  .logo { font-size: 1.05rem; }
+  .hstats { font-size: .6rem; }
 }
 
 /* Hide mob-tabs on desktop */
 .mob-tabs { display: none; }
 @media (max-width: 768px) { .mob-tabs { display: flex; } }
-.btn-xs{border:none;border-radius:5px;padding:3px 6px;font-size:.65rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:opacity .15s;line-height:1;}
+.btn-xs{border:none;border-radius:3px;padding:3px 6px;font-size:.65rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:opacity .15s;line-height:1;}
 .btn-xs:hover{opacity:.8;}
-.btn-play{background:var(--a1);color:#fff;}
-.btn-q{background:var(--a2);color:#1a1a2e;}
-.btn-fav{background:transparent;color:var(--muted);font-size:.85rem;padding:2px 4px;}
-.btn-fav.on{color:#ff6b9d;}
+.btn-play{background:var(--red);color:var(--paper);}
+.btn-q{background:var(--gold);color:var(--ink);}
+.btn-fav{background:transparent;color:var(--ink-soft);font-size:.85rem;padding:2px 4px;}
+.btn-fav.on{color:#b3475e;}
 
-/* PLAYER */
-.player-area{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.now-playing{background:var(--surface);border-bottom:2px solid rgba(255,255,255,.05);padding:11px 16px;flex-shrink:0;}
-.np-label{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--a3);margin-bottom:2px;}
-.np-title{font-family:'Bangers',cursive;font-size:1.55rem;letter-spacing:1px;color:#fff;line-height:1;}
-.np-sub{font-size:.68rem;color:var(--muted);margin-top:2px;}
+/* ── PLAYER: wood-paneled den ── */
+.player-area{flex:1;display:flex;flex-direction:column;overflow:hidden;background:
+  linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.45)),
+  repeating-linear-gradient(90deg,transparent 0 86px,rgba(0,0,0,.32) 86px 90px),
+  repeating-linear-gradient(90deg,var(--wood1) 0 7px,var(--wood2) 7px 11px,var(--wood1) 11px 26px,var(--wood3) 26px 29px,var(--wood2) 29px 43px);
+transition:background-color .6s ease;}
+
+/* Marquee now-playing bar */
+.now-playing{background:linear-gradient(180deg,var(--red),color-mix(in srgb,var(--red) 72%,#000));border-bottom:3px double rgba(244,234,210,.55);padding:10px 16px;flex-shrink:0;position:relative;overflow:hidden;transition:background-color .6s ease;}
+.now-playing::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,244,214,.08),transparent);animation:chyronShine 7s ease infinite;pointer-events:none;}
+@keyframes chyronShine{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+.np-label{font-family:'Oswald',sans-serif;font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:3px;color:var(--gold);display:inline-block;border-right:2px solid rgba(244,234,210,.35);padding-right:10px;margin-right:10px;margin-bottom:0;vertical-align:middle;}
+.np-title{font-family:'Alfa Slab One',serif;font-size:1.35rem;color:#fdf6e3;line-height:1;display:inline;letter-spacing:.5px;vertical-align:middle;text-shadow:2px 2px 0 rgba(0,0,0,.35);}
+.np-sub{font-family:'Oswald',sans-serif;font-size:.67rem;letter-spacing:1px;text-transform:uppercase;color:rgba(253,246,227,.75);margin-top:3px;}
 .np-controls{display:flex;align-items:center;gap:7px;margin-top:8px;flex-wrap:wrap;}
-.ctrl-btn{background:var(--card);border:1.5px solid rgba(255,255,255,.1);color:var(--text);padding:5px 13px;border-radius:20px;font-size:.73rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .15s;white-space:nowrap;}
-.ctrl-btn:hover{background:var(--a1);border-color:var(--a1);}
-.ctrl-btn.primary{background:var(--a1);border-color:var(--a1);}
+.ctrl-btn{background:rgba(0,0,0,.3);border:1.5px solid rgba(217,164,65,.55);color:#fdf6e3;padding:5px 13px;border-radius:4px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:'Oswald',sans-serif;letter-spacing:1px;text-transform:uppercase;transition:all .15s;white-space:nowrap;}
+.ctrl-btn:hover{background:var(--gold);border-color:var(--gold);color:var(--ink);}
+.ctrl-btn.primary{background:rgba(0,0,0,.45);border-color:var(--gold);}
 .ctrl-btn.fav-btn{padding:5px 10px;}
-.ctrl-btn.fav-btn.on{color:#ff6b9d;border-color:#ff6b9d;}
-.qcount{font-size:.7rem;color:var(--muted);}
+.ctrl-btn.fav-btn.on{color:#ffb3c1;border-color:#ffb3c1;}
+.qcount{font-size:.7rem;color:rgba(253,246,227,.7);font-family:'Oswald',sans-serif;letter-spacing:1px;}
 
-/* Rating stars */
-.star-rating{display:flex;gap:3px;align-items:center;}
-.star{font-size:1rem;cursor:pointer;color:var(--muted);transition:color .1s;line-height:1;}
-.star.on{color:var(--a2);}
-.star:hover{color:var(--a2);}
+/* Star ratings */
+.star-rating{display:flex;gap:4px;align-items:center;}
+.star{font-size:1.2rem;cursor:pointer;color:rgba(253,246,227,.4);transition:all .15s;line-height:1;}
+.star.on{color:var(--gold);filter:drop-shadow(0 0 5px rgba(217,164,65,.7));}
+.star:hover{transform:scale(1.3) rotate(-8deg);color:var(--gold);}
+@keyframes starPop{0%{transform:scale(1)}50%{transform:scale(1.5) rotate(-10deg)}100%{transform:scale(1)}}
 
-.iframe-wrap{flex:1;background:#000;position:relative;}
-.iframe-wrap iframe{width:100%;height:100%;border:none;}
-.idle-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--muted);background:var(--bg);}
-.idle-screen .bigicon{font-size:4.5rem;}
-.idle-screen h2{font-family:'Bangers',cursive;font-size:2rem;letter-spacing:2px;color:var(--a2);}
-.idle-screen p{font-size:.83rem;text-align:center;max-width:300px;line-height:1.5;}
+/* CRT TV player — walnut console */
+.iframe-wrap{flex:1;background:transparent;position:relative;display:flex;flex-direction:column;padding:12px 20px 8px;}
 
-/* QUEUE */
-.queue-panel{width:230px;flex-shrink:0;background:var(--surface);border-left:2px solid rgba(255,255,255,.05);display:flex;flex-direction:column;}
-.qp-header{padding:9px 11px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.qp-header h3{font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:1px;color:var(--a2);}
-.clr-btn{font-size:.67rem;color:var(--muted);cursor:pointer;font-weight:700;background:none;border:none;font-family:'Nunito',sans-serif;}
-.clr-btn:hover{color:var(--a1);}
-.cbadge{background:var(--a1);color:#fff;font-size:.58rem;font-weight:800;padding:1px 5px;border-radius:10px;margin-left:3px;}
-.qp-actions{padding:7px 9px;display:flex;flex-direction:column;gap:5px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;}
-.qa-btn{width:100%;padding:6px;border-radius:14px;border:none;font-size:.75rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:opacity .15s;}
+.crt-body{flex:1;display:flex;flex-direction:column;background:linear-gradient(145deg,#6b4a2e,#3c2817 60%,#2e1e10);border-radius:16px 16px 20px 20px;border:3px solid #1f1409;box-shadow:0 0 0 2px rgba(0,0,0,.5),0 14px 50px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,222,170,.18);position:relative;overflow:visible;min-height:0;}
+.crt-body::before{content:'';position:absolute;top:-28px;left:50%;transform:translateX(-50%);width:90px;height:28px;background:linear-gradient(135deg,transparent 47%,#8a6138 47%,#8a6138 53%,transparent 53%),linear-gradient(225deg,transparent 47%,#8a6138 47%,#8a6138 53%,transparent 53%);background-size:50% 100%;background-repeat:no-repeat;background-position:0 0,100% 0;pointer-events:none;}
+
+.crt-screen-wrap{flex:1;margin:14px 14px 8px;border-radius:10px;overflow:hidden;position:relative;border:5px solid #14100a;box-shadow:inset 0 0 40px rgba(0,0,0,.75);min-height:0;}
+.crt-screen-wrap::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.1) 2px,rgba(0,0,0,.1) 4px);pointer-events:none;z-index:10;}
+.crt-screen-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.45) 100%);pointer-events:none;z-index:11;}
+.crt-screen-wrap iframe{width:100%;height:100%;border:none;display:block;}
+
+.crt-controls{display:flex;align-items:center;justify-content:center;gap:14px;padding:6px 14px 12px;flex-shrink:0;}
+.tv-knob{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#e8c87a,#8a6138);border:2px solid #2e1e10;box-shadow:0 2px 4px rgba(0,0,0,.5);cursor:pointer;transition:transform .2s;flex-shrink:0;}
+.tv-knob:hover{transform:rotate(45deg);}
+.tv-knob.red{background:radial-gradient(circle at 35% 35%,#d96a52,#7e2a1a);}
+.tv-knob.teal{background:radial-gradient(circle at 35% 35%,#e8c87a,#8a6138);}
+.tv-speaker{display:flex;gap:3px;align-items:center;}
+.speaker-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,230,180,.28);}
+.tv-channel-disp{font-family:'Oswald',sans-serif;font-weight:600;font-size:.78rem;letter-spacing:2px;color:var(--gold);background:#14100a;padding:1px 10px;border-radius:3px;border:1px solid rgba(217,164,65,.4);}
+
+/* Idle screen: test pattern + PLEASE STAND BY */
+.idle-screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.25)),linear-gradient(90deg,#b5b5a8 0 12.5%,#b8a713 12.5% 25%,#1fa8a0 25% 37.5%,#1e9c3a 37.5% 50%,#b0399f 50% 62.5%,#c03a2b 62.5% 75%,#2b3ac0 75% 87.5%,#181818 87.5% 100%);}
+.idle-screen .bigicon{font-size:2.4rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6));}
+.idle-screen h2{font-family:'Alfa Slab One',serif;font-size:1.45rem;letter-spacing:4px;color:#fdf6e3;background:rgba(10,8,6,.88);padding:10px 22px;border-radius:4px;border:2px solid rgba(253,246,227,.35);animation:tvglow 2.4s ease-in-out infinite alternate;text-align:center;}
+@keyframes tvglow{from{text-shadow:0 0 8px rgba(253,246,227,.25);}to{text-shadow:0 0 22px rgba(253,246,227,.7);}}
+.idle-screen p{font-size:.74rem;color:#fdf6e3;background:rgba(10,8,6,.82);padding:8px 14px;border-radius:4px;text-align:center;max-width:280px;line-height:1.5;}
+.static-overlay{position:absolute;inset:0;opacity:.25;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.1'/%3E%3C/svg%3E");animation:staticA .08s steps(1) infinite;}
+@keyframes staticA{0%{transform:translate(0,0)}25%{transform:translate(-2px,1px)}50%{transform:translate(1px,-2px)}75%{transform:translate(-1px,2px)}100%{transform:translate(2px,-1px)}}
+
+/* ── QUEUE: tonight's lineup card ── */
+.queue-panel{width:230px;flex-shrink:0;background:var(--paper);background-image:repeating-linear-gradient(0deg,transparent 0 27px,rgba(44,35,24,.045) 27px 28px);border-left:4px solid var(--red);display:flex;flex-direction:column;position:relative;transition:background-color .6s ease;}
+.queue-panel::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:repeating-linear-gradient(to bottom,var(--red) 0px,var(--red) 8px,transparent 8px,transparent 14px);}
+.qp-header{padding:9px 11px;border-bottom:1.5px solid rgba(44,35,24,.2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.qp-header h3{font-family:'Alfa Slab One',serif;font-size:.95rem;letter-spacing:.5px;color:var(--red);}
+.clr-btn{font-size:.67rem;color:var(--ink-soft);cursor:pointer;font-weight:700;background:none;border:none;font-family:'Nunito',sans-serif;}
+.clr-btn:hover{color:var(--red);}
+.cbadge{background:var(--red);color:var(--paper);font-size:.58rem;font-weight:800;padding:1px 5px;border-radius:8px;margin-left:3px;}
+.qp-actions{padding:7px 9px;display:flex;flex-direction:column;gap:5px;border-bottom:1.5px solid rgba(44,35,24,.2);flex-shrink:0;}
+.qa-btn{width:100%;padding:6px;border-radius:4px;border:none;font-size:.72rem;font-weight:600;cursor:pointer;font-family:'Oswald',sans-serif;letter-spacing:1px;text-transform:uppercase;transition:opacity .15s;}
 .qa-btn:hover{opacity:.85;}
-.qa-shuffle{background:linear-gradient(135deg,var(--a2),var(--a1));color:#fff;}
-.qa-add{background:var(--card);color:var(--muted);border:1.5px solid rgba(255,255,255,.1);}
-.qa-add:hover{border-color:var(--a3);color:var(--a3);}
-.qa-favs{background:var(--card);color:#ff6b9d;border:1.5px solid rgba(255,255,255,.1);}
-.qa-favs:hover{border-color:#ff6b9d;}
+.qa-shuffle{background:var(--red);color:var(--paper);}
+.qa-add{background:transparent;color:var(--ink-soft);border:1.5px solid rgba(44,35,24,.4);}
+.qa-add:hover{border-color:var(--teal);color:var(--teal);}
+.qa-favs{background:transparent;color:#b3475e;border:1.5px solid rgba(44,35,24,.4);}
+.qa-favs:hover{border-color:#b3475e;}
 
 /* Queue tabs */
-.q-tabs{display:flex;gap:0;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.07);}
-.q-tab{flex:1;padding:6px;font-size:.68rem;font-weight:800;cursor:pointer;text-align:center;color:var(--muted);background:none;border:none;font-family:'Nunito',sans-serif;transition:all .15s;border-bottom:2px solid transparent;}
-.q-tab.on{color:var(--a2);border-bottom-color:var(--a2);}
+.q-tabs{display:flex;gap:0;flex-shrink:0;border-bottom:1.5px solid rgba(44,35,24,.2);}
+.q-tab{flex:1;padding:6px;font-size:.66rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;text-align:center;color:var(--ink-soft);background:none;border:none;font-family:'Oswald',sans-serif;transition:all .15s;border-bottom:2px solid transparent;}
+.q-tab.on{color:var(--red);border-bottom-color:var(--red);}
 
-.queue-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--a2) transparent;}
-.q-item{display:flex;align-items:center;padding:7px 9px;gap:6px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .12s;}
-.q-item:hover{background:rgba(255,255,255,.05);}
-.q-item.cur{border-left:3px solid var(--a3);background:rgba(0,210,211,.08);}
-.q-num{font-size:.63rem;color:var(--a2);font-weight:800;width:15px;flex-shrink:0;}
+.queue-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--red) transparent;}
+.q-item{display:flex;align-items:center;padding:7px 9px;gap:6px;border-bottom:1px dotted rgba(44,35,24,.35);cursor:pointer;transition:background .12s;color:var(--ink);}
+.q-item:hover{background:rgba(44,35,24,.06);}
+.q-item.cur{border-left:3px solid var(--teal);background:rgba(46,127,116,.1);}
+.q-num{font-family:'Oswald',sans-serif;font-size:.63rem;color:var(--red);font-weight:600;width:15px;flex-shrink:0;}
 .q-name{font-size:.73rem;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.q-del{font-size:.65rem;opacity:0;transition:opacity .15s;background:none;border:none;color:var(--a1);cursor:pointer;}
+.q-del{font-size:.65rem;opacity:0;transition:opacity .15s;background:none;border:none;color:var(--red);cursor:pointer;}
 .q-item:hover .q-del{opacity:1;}
-.empty-q{padding:22px 12px;text-align:center;color:var(--muted);font-size:.78rem;}
+.empty-q{padding:22px 12px;text-align:center;color:var(--ink-soft);font-size:.78rem;}
 .empty-q .big{font-size:2rem;margin-bottom:7px;}
 
 /* Autoplay toggle */
-.autoplay-row{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0;}
-.autoplay-label{font-size:.68rem;font-weight:700;color:var(--muted);}
-.toggle{width:34px;height:18px;background:var(--card);border-radius:9px;cursor:pointer;position:relative;transition:background .2s;border:none;flex-shrink:0;}
-.toggle.on{background:var(--a3);}
-.toggle::after{content:'';position:absolute;width:12px;height:12px;background:#fff;border-radius:50%;top:3px;left:3px;transition:left .2s;}
-.toggle.on::after{left:19px;}
+.autoplay-row{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border-top:1.5px solid rgba(44,35,24,.2);flex-shrink:0;}
+.autoplay-label{font-size:.68rem;font-weight:700;color:var(--ink-soft);}
+.toggle{width:34px;height:18px;background:var(--paper2);border-radius:9px;cursor:pointer;position:relative;transition:background .2s;border:1.5px solid rgba(44,35,24,.35);flex-shrink:0;}
+.toggle.on{background:var(--teal);border-color:var(--teal);}
+.toggle::after{content:'';position:absolute;width:12px;height:12px;background:#fffdf5;border-radius:50%;top:1.5px;left:2px;transition:left .2s;box-shadow:0 1px 2px rgba(0,0,0,.3);}
+.toggle.on::after{left:17px;}
 
 /* Toast */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--a3);color:#1a1a2e;padding:7px 17px;border-radius:20px;font-weight:800;font-size:.8rem;transition:transform .3s;z-index:999;white-space:nowrap;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--gold);color:var(--ink);padding:7px 17px;border-radius:4px;font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:.5px;font-size:.8rem;transition:transform .3s;z-index:999;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.4);}
 .toast.show{transform:translateX(-50%) translateY(0);}
 
 /* Share modal */
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:none;align-items:center;justify-content:center;}
+.modal-backdrop{position:fixed;inset:0;background:rgba(20,14,8,.75);z-index:100;display:none;align-items:center;justify-content:center;}
 .modal-backdrop.open{display:flex;}
-.modal{background:var(--surface);border:1.5px solid rgba(255,255,255,.1);border-radius:16px;padding:24px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.5);}
-.modal h3{font-family:'Bangers',cursive;font-size:1.4rem;letter-spacing:1px;color:var(--a2);margin-bottom:8px;}
-.modal p{font-size:.82rem;color:var(--muted);margin-bottom:14px;line-height:1.5;}
-.modal input{width:100%;padding:8px 12px;background:var(--bg);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.82rem;outline:none;margin-bottom:12px;}
+.modal{background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:24px;max-width:420px;width:90%;box-shadow:6px 6px 0 rgba(0,0,0,.35);color:var(--ink);}
+.modal h3{font-family:'Alfa Slab One',serif;font-size:1.25rem;letter-spacing:.5px;color:var(--red);margin-bottom:8px;}
+.modal p{font-size:.82rem;color:#5a4c38;margin-bottom:14px;line-height:1.5;}
+.modal input{width:100%;padding:8px 12px;background:rgba(255,252,244,.8);border:1.5px solid rgba(44,35,24,.35);border-radius:5px;color:var(--ink);font-family:'Nunito',sans-serif;font-size:.82rem;outline:none;margin-bottom:12px;}
 .modal-btns{display:flex;gap:8px;justify-content:flex-end;}
-.modal-btn{padding:7px 18px;border-radius:14px;border:none;font-size:.78rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;}
-.modal-btn.copy{background:var(--a3);color:#1a1a2e;}
-.modal-btn.close{background:var(--card);color:var(--muted);border:1.5px solid rgba(255,255,255,.1);}
+.modal-btn{padding:7px 18px;border-radius:4px;border:none;font-size:.76rem;font-weight:600;letter-spacing:.5px;cursor:pointer;font-family:'Oswald',sans-serif;text-transform:uppercase;}
+.modal-btn.copy{background:var(--red);color:var(--paper);}
+.modal-btn.close{background:transparent;color:var(--ink-soft);border:1.5px solid rgba(44,35,24,.4);}
 
-/* Now playing card */
-.np-card{background:linear-gradient(135deg,var(--card),var(--bg));border:1.5px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 18px;margin-top:10px;display:none;}
+/* Now playing card — retro title card */
+.np-card{background:var(--red);background-image:radial-gradient(circle,rgba(0,0,0,.14) 1.5px,transparent 1.5px);background-size:9px 9px;border:2px solid var(--ink);border-radius:8px;padding:14px 18px;margin-top:10px;display:none;box-shadow:4px 4px 0 rgba(0,0,0,.3);}
 .np-card.visible{display:block;}
-.npc-title{font-family:'Bangers',cursive;font-size:2rem;letter-spacing:2px;color:#fff;line-height:1;}
-.npc-sub{font-size:.75rem;color:var(--a3);margin-top:3px;}
-.npc-stars{margin-top:6px;}
+.npc-title{font-family:'Alfa Slab One',serif;font-size:1.7rem;letter-spacing:1px;color:#fdf6e3;line-height:1.1;text-shadow:2px 2px 0 rgba(0,0,0,.35);}
+.npc-sub{font-family:'Oswald',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-top:3px;}
+.npc-stars{margin-top:6px;color:var(--gold);}
 
 /* submission form in modal */
-.sub-form textarea{width:100%;padding:8px 12px;background:var(--bg);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.82rem;outline:none;resize:vertical;min-height:70px;}
+.sub-form textarea{width:100%;padding:8px 12px;background:rgba(255,252,244,.8);border:1.5px solid rgba(44,35,24,.35);border-radius:5px;color:var(--ink);font-family:'Nunito',sans-serif;font-size:.82rem;outline:none;resize:vertical;min-height:70px;}
 /* Cascading network dropdowns */
-.net-tag-pill{display:inline-flex;align-items:center;gap:4px;background:var(--a2);color:#1a1a2e;padding:3px 8px 3px 10px;border-radius:12px;font-size:.68rem;font-weight:800;margin:2px;}
-.net-tag-pill button{background:none;border:none;cursor:pointer;color:#1a1a2e;font-size:.8rem;line-height:1;padding:0;font-weight:900;opacity:.5;}
+.net-tag-pill{display:inline-flex;align-items:center;gap:4px;background:var(--gold);color:var(--ink);padding:3px 8px 3px 10px;border-radius:4px;font-size:.68rem;font-weight:800;margin:2px;}
+.net-tag-pill button{background:none;border:none;cursor:pointer;color:var(--ink);font-size:.8rem;line-height:1;padding:0;font-weight:900;opacity:.5;}
 .net-tag-pill button:hover{opacity:1;}
 .net-dd-wrap{display:flex;align-items:center;gap:5px;margin-bottom:5px;}
-.net-dd-wrap select{flex:1;padding:5px 8px;background:var(--card);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.74rem;outline:none;cursor:pointer;}
-.net-dd-wrap select:focus{border-color:var(--a2);}
-.net-dd-wrap select option{background:#0f3460;color:var(--text);}
+.net-dd-wrap select{flex:1;padding:5px 8px;background:rgba(255,252,244,.75);border:1.5px solid rgba(44,35,24,.35);border-radius:4px;color:var(--ink);font-family:'Nunito',sans-serif;font-size:.74rem;outline:none;cursor:pointer;}
+.net-dd-wrap select:focus{border-color:var(--red);}
+.net-dd-wrap select option{background:var(--paper);color:var(--ink);}
 #netTags{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:4px;}
+
 </style>
 </head>
 <body>
 <div class="app">
 
 <header>
-  <div class="logo"><span style="font-size:1.4rem;vertical-align:middle;">📺</span> Car<b>Tune</b> Intros</div>
+  <div class="logo">📺 Car<b>Tune</b> Intros</div>
   <div class="hstats" id="hstats">Loading...</div>
 </header>
 
@@ -333,12 +405,24 @@ header{background:linear-gradient(135deg,#e94560 0%,#f5a623 50%,#e94560 100%);ba
       </div>
     </div>
     <div class="iframe-wrap">
-      <div class="idle-screen" id="idleScreen">
-        <div class="bigicon">📺</div>
-        <h2>CarTune Intros!</h2>
-        <p>Click any show to hear its theme song.<br>Build a queue, rate your favorites, and relive the nostalgia.</p>
+      <div class="crt-body">
+        <div class="crt-screen-wrap">
+          <div class="idle-screen" id="idleScreen">
+            <div class="static-overlay"></div>
+            <div class="bigicon">📺</div>
+            <h2>PLEASE STAND BY</h2>
+            <p>Click any show to hear its theme song. Build a queue, rate your favorites, and relive the nostalgia.</p>
+          </div>
+          <iframe id="ytFrame" src="" allowfullscreen allow="autoplay;encrypted-media" style="display:none;width:100%;height:100%;border:none;"></iframe>
+        </div>
+        <div class="crt-controls">
+          <div class="tv-knob red" title="Previous"></div>
+          <div class="tv-speaker"><div class="speaker-dot"></div><div class="speaker-dot"></div><div class="speaker-dot"></div><div class="speaker-dot"></div></div>
+          <div class="tv-channel-disp" id="tvChannel">CH 01</div>
+          <div class="tv-speaker"><div class="speaker-dot"></div><div class="speaker-dot"></div><div class="speaker-dot"></div><div class="speaker-dot"></div></div>
+          <div class="tv-knob teal" title="Next" onclick="playNext()"></div>
+        </div>
       </div>
-      <iframe id="ytFrame" src="" allowfullscreen allow="autoplay;encrypted-media" style="display:none;"></iframe>
     </div>
   </div>
 
@@ -441,7 +525,7 @@ const SHOWS = [
   { name: "Dudley Do-Right", ytId: "Npfi0UZL2ow", era: "1960s", net: "ABC", year: 1969 },
   { name: "Peabody's Improbable History", era: "1960s", net: "NBC", year: 1959, ytId: "4-fbJvlRn20" },
   { name: "Fractured Fairy Tales", ytId: "dW41oEYUHW8", era: "1960s", net: "NBC", year: 1959 },
-  { name: "The Bugs Bunny Show", ytId: "aFTTB6gOAJA", era: "1960s", net: "ABC", year: 1960 },
+  { name: "The Bugs Bunny Show", ytId: "F-t8PngHgWY", era: "1960s", net: "ABC", year: 1960 },
   { name: "The Road Runner Show", ytId: "OwYQsZuh2CM", era: "1960s", net: "CBS", year: 1966 },
   { name: "The Porky Pig Show", ytId: "lF41eE_xRfw", era: "1960s", net: "ABC", year: 1964 },
   { name: "Mister Magoo", ytId: "t8GTHXTEvIc", era: "1960s", net: "NBC", year: 1960 },
@@ -451,7 +535,7 @@ const SHOWS = [
   { name: "Yakky Doodle", ytId: "o-5EwDE9Q7o", era: "1960s", net: "Syndicated", year: 1960 },
   { name: "Wally Gator", ytId: "JXWNoFkFTDU", era: "1960s", net: "Syndicated", year: 1962 },
   { name: "Touche Turtle", era: "1960s", net: "Syndicated", year: 1962, ytId: "KS7rNY2V9f8" },
-  { name: "Augie Doggie and Doggie Daddy", ytId: "hlBQRN9zpUU", era: "1960s", net: "Syndicated", year: 1959 },
+  { name: "Augie Doggie and Doggie Daddy", ytId: "UYwKKOUhgbQ", era: "1960s", net: "Syndicated", year: 1959 },
   { name: "Hector Heathcote", era: "1960s", net: "NBC", year: 1963 , ytId: "VmBrZ4BQ30o"},
   { name: "Deputy Dawg", ytId: "aI3GS6F8Seo", era: "1960s", net: "Syndicated", year: 1959 },
   { name: "Beany and Cecil", ytId: "jMHm9iDf2H4", era: "1960s", net: "ABC", year: 1962 },
@@ -472,7 +556,7 @@ const SHOWS = [
   { name: "The Mighty Mightor", ytId: "aWHvor1J-QM", era: "1960s", net: "CBS", year: 1967 },
   { name: "Shazzan", era: "1960s", net: "CBS", year: 1967 , ytId: "s7ISYt-7QaY"},
   { name: "Birdman and the Galaxy Trio", ytId: "MUgthqRjD9M", era: "1960s", net: "NBC", year: 1967 },
-  { name: "Cool McCool", ytId: "BGto6FuEEhE", era: "1960s", net: "NBC", year: 1966 },
+  { name: "Cool McCool", ytId: "vnLJGh03SLw", era: "1960s", net: "NBC", year: 1966 },
   { name: "The Beatles cartoon", ytId: "tZJQfZEOk7Y", era: "1960s", net: "ABC", year: 1965 },
   { name: "George of the Jungle", ytId: "D8rViF7V_oA", era: "1960s", net: "ABC", year: 1967 },
   { name: "Super Chicken", ytId: "FKss2pBYQ6Y", era: "1960s", net: "ABC", year: 1967 },
@@ -490,7 +574,7 @@ const SHOWS = [
   { name: "Spider-Man 1967", ytId: "5Z8N9TTvKeQ", era: "1960s", net: "ABC", year: 1967 },
   { name: "The Fantastic Four 1967", ytId: "Eue8XngYdzM", era: "1960s", net: "ABC", year: 1967 },
   { name: "Iron Man 1966", ytId: "U0gTFujhTTQ", era: "1960s", net: "Syndicated", year: 1966 },
-  { name: "The Incredible Hulk 1966", ytId: "SxH4oPwI4Lk", era: "1960s", net: "Syndicated", year: 1966 },
+  { name: "The Incredible Hulk 1966", ytId: "b9u7GjNkp5Y", era: "1960s", net: "Syndicated", year: 1966 },
   { name: "Captain America 1966", ytId: "F_31N_60QK4", era: "1960s", net: "Syndicated", year: 1966 },
   { name: "Thor 1966", era: "1960s", net: "Syndicated", year: 1966 , ytId: "q631uZ6DQzg"},
   { name: "Aquaman cartoon", ytId: "4cwkG9Py8l4", era: "1960s", net: "CBS", year: 1968 },
@@ -503,13 +587,13 @@ const SHOWS = [
   // ─── 1970s ───
   { name: "Josie and the Pussycats", ytId: "Ly4fJeCQV_o", era: "1970s", net: "CBS", year: 1970 },
   { name: "The Harlem Globetrotters cartoon", ytId: "sHjn1wfGpHo", era: "1970s", net: "CBS", year: 1970 },
-  { name: "Sabrina the Teenage Witch cartoon", ytId: "FIA9yoDfCTs", era: "1970s", net: "CBS", year: 1971 },
+  { name: "Sabrina the Teenage Witch cartoon", ytId: "YvTUN5KsDAM", era: "1970s", net: "CBS", year: 1971 },
   { name: "The Pebbles and Bamm-Bamm Show", ytId: "MVogUqWScYc", era: "1970s", net: "CBS", year: 1971 },
   { name: "The Jackson 5ive cartoon", ytId: "JPL3Z14is1w", era: "1970s", net: "ABC", year: 1971 },
   { name: "The Osmonds cartoon", ytId: "0KFGYpCIMYw", era: "1970s", net: "ABC", year: 1972 },
   { name: "Help! It's the Hair Bear Bunch!", ytId: "4-dTmyKJOk8", era: "1970s", net: "CBS", year: 1971 },
   { name: "The Flintstone Comedy Hour", ytId: "YPL5HLD0tO4", era: "1970s", net: "CBS", year: 1972 },
-  { name: "The Brady Kids cartoon", ytId: "he4WPvKGGR0", era: "1970s", net: "ABC", year: 1972 },
+  { name: "The Brady Kids cartoon", ytId: "xDHFvZHPD3M", era: "1970s", net: "ABC", year: 1972 },
   { name: "Sealab 2020", ytId: "puEXCyqkEKA", era: "1970s", net: "NBC", year: 1972 },
   { name: "Inch High Private Eye", ytId: "pFfIZMlTafs", era: "1970s", net: "NBC", year: 1973 },
   { name: "Speed Buggy", ytId: "-jDtM9QlTq8", era: "1970s", net: "CBS", year: 1973 },
@@ -531,7 +615,7 @@ const SHOWS = [
   { name: "Captain Caveman and the Teen Angels", ytId: "ZkX5RJu_X9s", era: "1970s", net: "ABC", year: 1977 },
   { name: "Dynomutt Dog Wonder", ytId: "VxxL2YvNkzE", era: "1970s", net: "ABC", year: 1976 },
   { name: "Laff-A-Lympics", era: "1970s", net: "ABC", year: 1977 , ytId: "PcwLzq0hm2I"},
-  { name: "Grape Ape", ytId: "oCEBdAh5NPo", era: "1970s", net: "ABC", year: 1975 },
+  { name: "Grape Ape", ytId: "VCA2awpTRO0", era: "1970s", net: "ABC", year: 1975 },
   { name: "Josie and the Pussycats in Outer Space", ytId: "eIMrGPxh1AM", era: "1970s", net: "CBS", year: 1972 },
   { name: "The Addams Family cartoon", ytId: "IokBKvFiCvM", era: "1970s", net: "NBC", year: 1973 },
   { name: "Groovie Goolies", ytId: "xmelTlEzI34", era: "1970s", net: "CBS", year: 1970 },
@@ -552,7 +636,7 @@ const SHOWS = [
   { name: "Devlin", ytId: "ICEYuXR5-LI", era: "1970s", net: "ABC", year: 1974 },
   { name: "The Ghost Busters", era: "1970s", net: "CBS", year: 1975 , ytId: "M2SysYkllvE"},
   { name: "Ark II", ytId: "rP0JhslTriw", era: "1970s", net: "CBS", year: 1976 },
-  { name: "Mumbly", ytId: "fzKOGZ1gUFg", era: "1970s", net: "ABC", year: 1976 },
+  { name: "Mumbly", ytId: "NmdAgz0xuXs", era: "1970s", net: "ABC", year: 1976 },
   { name: "The Barkleys", ytId: "0JlqqkkPs0o", era: "1970s", net: "NBC", year: 1972 },
   { name: "Monster Squad", era: "1970s", net: "NBC", year: 1976 , ytId: "QjNKsQ7HDXw"},
   { name: "Dr. Shrinker", ytId: "Vh1iXZ3pQtQ", era: "1970s", net: "ABC", year: 1976 },
@@ -601,12 +685,12 @@ const SHOWS = [
   { name: "Kidd Video", era: "1980s", net: "NBC", year: 1984 , ytId: "L05o6Qqz-Yw"},
   { name: "Chuck Norris Karate Kommandos", ytId: "sLWmfsv3XDE", era: "1980s", net: "Syndicated", year: 1986 },
   { name: "Rambo The Force of Freedom", ytId: "sacAWE4mPbg", era: "1980s", net: "Syndicated", year: 1986 },
-  { name: "M.A.S.K. cartoon", ytId: "IEBapjl78SQ", era: "1980s", net: "Syndicated", year: 1985 },
+  { name: "M.A.S.K. cartoon", ytId: "dn-MrJysIGA", era: "1980s", net: "Syndicated", year: 1985 },
   { name: "SilverHawks", era: "1980s", net: "Syndicated", year: 1986 , ytId: "SdtcK1Qs2K4"},
   { name: "BraveStarr", ytId: "gm3hd7m5wzM", era: "1980s", net: "Syndicated", year: 1987 },
   { name: "The Centurions cartoon", ytId: "pn49zxXRHhA", era: "1980s", net: "Syndicated", year: 1986 },
   { name: "Visionaries Knights of the Magical Light", ytId: "ZviemBWC8SU", era: "1980s", net: "Syndicated", year: 1987 },
-  { name: "Inhumanoids", ytId: "ls2lvNYrZVI", era: "1980s", net: "Syndicated", year: 1986 },
+  { name: "Inhumanoids", ytId: "XT-T__BU88g", era: "1980s", net: "Syndicated", year: 1986 },
   { name: "Pound Puppies cartoon", ytId: "-qbkEZHQAHY", era: "1980s", net: "ABC", year: 1986 },
   { name: "Foofur", ytId: "a7Keu5Lbqp8", era: "1980s", net: "NBC", year: 1986 },
   { name: "Flintstone Kids", ytId: "ozALyhvfsRk", era: "1980s", net: "ABC", year: 1986 },
@@ -622,7 +706,7 @@ const SHOWS = [
   { name: "Rubik the Amazing Cube", ytId: "LYs_GCy9PRk", era: "1980s", net: "ABC", year: 1983 },
   { name: "Gilligan's Planet", ytId: "MagAchLlJP4", era: "1980s", net: "CBS", year: 1982 },
   { name: "The Dukes cartoon", era: "1980s", net: "CBS", year: 1983 , ytId: "fMpDE7kQrj8"},
-  { name: "Blackstar cartoon", ytId: "7gEglHALTPQ", era: "1980s", net: "CBS", year: 1981 },
+  { name: "Blackstar cartoon", ytId: "HAJZbMvwl9M", era: "1980s", net: "CBS", year: 1981 },
   { name: "Thundarr the Barbarian", ytId: "wSKamG44JDU", era: "1980s", net: "ABC", year: 1980 },
   { name: "Dragon's Lair cartoon", ytId: "jHug7aOzK9k", era: "1980s", net: "ABC", year: 1984 },
   { name: "Saturday Supercade", ytId: "Krq767hMXjE", era: "1980s", net: "CBS", year: 1983 },
@@ -631,7 +715,7 @@ const SHOWS = [
   { name: "Goldie Gold and Action Jack", era: "1980s", net: "ABC", year: 1981 , ytId: "5hG9W9kb9KU"},
   { name: "Dino-Riders", ytId: "QwpmqGGD-dQ", era: "1980s", net: "Syndicated", year: 1988 },
   { name: "The Super Mario Bros Super Show", ytId: "vkQTgjGboWQ", era: "1980s", net: "Syndicated", year: 1989 },
-  { name: "Captain N The Game Master", ytId: "YYlEWAN8_Eg", era: "1980s", net: "NBC", year: 1989 },
+  { name: "Captain N The Game Master", ytId: "3wo4yXUlNgQ", era: "1980s", net: "NBC", year: 1989 },
   { name: "Legend of Zelda cartoon", ytId: "eUNR7QxtAOU", era: "1980s", net: "NBC", year: 1989 },
   { name: "Mork and Mindy cartoon", ytId: "YrlYLTVqMeI", era: "1980s", net: "ABC", year: 1982 },
   { name: "The Fonz and the Happy Days Gang", ytId: "slvGKU7HF6M", era: "1980s", net: "ABC", year: 1980 },
@@ -661,12 +745,12 @@ const SHOWS = [
   { name: "Freakazoid!", era: "1990s", net: "WB", year: 1995 , ytId: "JZmw3jzX1t0"},
   { name: "Batman The Animated Series", ytId: "LLFtgDd16Wg", era: "1990s", net: "Fox Kids", year: 1992 },
   { name: "Superman The Animated Series", era: "1990s", net: "WB", year: 1996 , ytId: "Xo1LB0g3QrE"},
-  { name: "Batman Beyond", ytId: "sP2NNhEPneU", era: "1990s", net: "WB", year: 1999 },
+  { name: "Batman Beyond", ytId: "EdwzQPGzPSo", era: "1990s", net: "WB", year: 1999 },
   { name: "The New Batman Adventures", ytId: "uhSJUTO0f3M", era: "1990s", net: "WB", year: 1997 },
   { name: "X-Men The Animated Series", ytId: "sAkL2-vh2Sk", era: "1990s", net: "Fox Kids", year: 1992 },
   { name: "Spider-Man The Animated Series", ytId: "DZGN9fZvQhc", era: "1990s", net: "Fox Kids", year: 1994 },
   { name: "The Tick animated", era: "1990s", net: "Fox Kids", year: 1994 , ytId: "ywz5xLQ_XaA"},
-  { name: "Earthworm Jim cartoon", ytId: "hVSyb5O1XK4", era: "1990s", net: "WB", year: 1995 },
+  { name: "Earthworm Jim cartoon", ytId: "2P0qHN9ML3E", era: "1990s", net: "WB", year: 1995 },
   { name: "Mighty Morphin Power Rangers", ytId: "nHalaFUqnTI", era: "1990s", net: "Fox Kids", year: 1993 },
   { name: "VR Troopers", era: "1990s", net: "Syndicated", year: 1994 , ytId: "3IHMWX_vu_U"},
   { name: "Big Bad Beetleborgs", ytId: "nSGkZR2WeAw", era: "1990s", net: "Fox Kids", year: 1996 },
@@ -674,7 +758,7 @@ const SHOWS = [
   { name: "Street Sharks", ytId: "vMVMQa39BAU", era: "1990s", net: "Syndicated", year: 1994 },
   { name: "Extreme Dinosaurs", era: "1990s", net: "Syndicated", year: 1997 , ytId: "VI__EW_fPJs"},
   { name: "Biker Mice from Mars", ytId: "2hW0HLmgWhg", era: "1990s", net: "Syndicated", year: 1993 },
-  { name: "Bucky O'Hare cartoon", ytId: "2d8Df7gf5yY", era: "1990s", net: "Syndicated", year: 1991 },
+  { name: "Bucky O'Hare cartoon", ytId: "VoxiAKGHZ5k", era: "1990s", net: "Syndicated", year: 1991 },
   { name: "The Pirates of Dark Water", ytId: "1CoC2yL-f1I", era: "1990s", net: "ABC", year: 1991 },
   { name: "Gargoyles", ytId: "2xGeSso_45Y", era: "1990s", net: "Syndicated", year: 1994 },
   { name: "The Mighty Ducks cartoon", ytId: "mYwlXRVWCCI", era: "1990s", net: "Syndicated", year: 1996 },
@@ -683,14 +767,14 @@ const SHOWS = [
   { name: "Aladdin The Series", ytId: "7VVZ_mB_HAc", era: "1990s", net: "Syndicated", year: 1994 },
   { name: "The Little Mermaid cartoon", ytId: "P5ZLRqVPupo", era: "1990s", net: "CBS", year: 1992 },
   { name: "Timon and Pumbaa cartoon", ytId: "CDcWX2zw7MQ", era: "1990s", net: "Syndicated", year: 1995 },
-  { name: "Hercules The Animated Series", ytId: "ZSgSNq1dnA4", era: "1990s", net: "Syndicated", year: 1998 },
+  { name: "Hercules The Animated Series", ytId: "eQtzaTDoJi8", era: "1990s", net: "Syndicated", year: 1998 },
   { name: "The New Adventures of Winnie the Pooh", ytId: "ckvnRB6IHSU", era: "1990s", net: "Syndicated", year: 1988 },
   { name: "Bonkers cartoon", ytId: "sN6tia-YAuU", era: "1990s", net: "Syndicated", year: 1993 },
   { name: "Bobby's World", ytId: "i315vNxEzJ0", era: "1990s", net: "Fox Kids", year: 1990 },
   { name: "Eek! the Cat", era: "1990s", net: "Fox Kids", year: 1992 , ytId: "asqNyc8XdmA"},
-  { name: "2 Stupid Dogs", ytId: "yTACiq0nasU", era: "1990s", net: "Syndicated", year: 1993 },
+  { name: "2 Stupid Dogs", ytId: "iXLECBI6eSI", era: "1990s", net: "Syndicated", year: 1993 },
   { name: "SWAT Kats The Radical Squadron", ytId: "H0IQBWWabuU", era: "1990s", net: "Syndicated", year: 1993 },
-  { name: "C.O.P.S. cartoon", ytId: "MuckMAkHsSk", era: "1990s", net: "Syndicated", year: 1988 },
+  { name: "C.O.P.S. cartoon", ytId: "Btr0bP-l96M", era: "1990s", net: "Syndicated", year: 1988 },
   { name: "Rugrats", era: "1990s", net: "Nickelodeon", year: 1991 , ytId: "xfzynwmrlok"},
   { name: "Doug cartoon", ytId: "mgT1Me7h6m0", era: "1990s", net: "Nickelodeon", year: 1991 },
   { name: "The Ren and Stimpy Show", ytId: "W5NfgKPVZ2g", era: "1990s", net: "Nickelodeon", year: 1991 },
@@ -709,8 +793,8 @@ const SHOWS = [
   { name: "The Powerpuff Girls", ytId: "f7MiaSr-0ug", era: "1990s", net: "Cartoon Network", year: 1998 },
   { name: "Cow and Chicken", ytId: "mhiKCcylhyY", era: "1990s", net: "Cartoon Network", year: 1997 },
   { name: "I Am Weasel", era: "1990s", net: "Cartoon Network", year: 1997 , ytId: "VvLV3OZAcyg"},
-  { name: "Courage the Cowardly Dog", ytId: "BSbMhd1nXiE", era: "1990s", net: "Cartoon Network", year: 1999 },
-  { name: "Ed Edd n Eddy", ytId: "WF_XSDHK7Gc", era: "1990s", net: "Cartoon Network", year: 1999 },
+  { name: "Courage the Cowardly Dog", ytId: "7Kdsy6Fnr8s", era: "1990s", net: "Cartoon Network", year: 1999 },
+  { name: "Ed Edd n Eddy", ytId: "1BPLXepRC8E", era: "1990s", net: "Cartoon Network", year: 1999 },
   { name: "What a Cartoon!", ytId: "2fMWOSU3iQ8", era: "1990s", net: "Cartoon Network", year: 1995 },
   { name: "Recess cartoon", ytId: "zObiglKZKZc", era: "1990s", net: "ABC", year: 1997 },
   { name: "Pepper Ann", ytId: "2KmxQz3AbbI", era: "1990s", net: "ABC", year: 1997 },
@@ -723,7 +807,7 @@ const SHOWS = [
   { name: "The Mask animated series", ytId: "tWiVAkWCzw4", era: "1990s", net: "CBS", year: 1995 },
   { name: "Ace Ventura Pet Detective cartoon", ytId: "WjTDXatmzUE", era: "1990s", net: "CBS", year: 1995 },
   { name: "Men in Black cartoon", ytId: "mVAePIyC4kQ", era: "1990s", net: "WB", year: 1997 },
-  { name: "Attack of the Killer Tomatoes cartoon", ytId: "NfUTC02of5g", era: "1990s", net: "Fox Kids", year: 1990 },
+  { name: "Attack of the Killer Tomatoes cartoon", ytId: "sNfLnRHpVjY", era: "1990s", net: "Fox Kids", year: 1990 },
   { name: "Raw Toonage", ytId: "uYEb5WA9BLs", era: "1990s", net: "CBS", year: 1992 },
   { name: "Pokemon", ytId: "JuYeHPFR3f0", era: "1990s", net: "Kids WB", year: 1998 },
   { name: "Sonic the Hedgehog SatAM", ytId: "7R2vFDIBToI", era: "1990s", net: "ABC", year: 1993 },
@@ -735,11 +819,11 @@ const SHOWS = [
   { name: "Street Fighter cartoon", ytId: "rMuPpUpLkZ8", era: "1990s", net: "USA Network", year: 1995 },
   { name: "Mortal Kombat Defenders of the Realm", ytId: "N3i4VKa1f8Q", era: "1990s", net: "USA Network", year: 1996 },
   { name: "Double Dragon cartoon", ytId: "n3c2xbYWKY0", era: "1990s", net: "ABC", year: 1993 },
-  { name: "Cadillacs and Dinosaurs cartoon", ytId: "KMMh6QcRaUY", era: "1990s", net: "CBS", year: 1993 },
+  { name: "Cadillacs and Dinosaurs cartoon", ytId: "XNvxr7ty6Z4", era: "1990s", net: "CBS", year: 1993 },
   { name: "Godzilla The Series 1998", ytId: "1b2CtgkwJQA", era: "1990s", net: "Fox Kids", year: 1998 },
   { name: "The Real Adventures of Jonny Quest", ytId: "_uuJULBkHG4", era: "1990s", net: "Cartoon Network", year: 1996 },
   { name: "Space Ghost Coast to Coast", ytId: "N0v_Ckb0xAY", era: "1990s", net: "Cartoon Network", year: 1994 },
-  { name: "The Archies in Riverdale High", ytId: "Qy-LmJ12d0I", era: "1990s", net: "Syndicated", year: 1990 },
+  { name: "The Archies in Riverdale High", ytId: "M0sHMd1bTfI", era: "1990s", net: "Syndicated", year: 1990 },
   { name: "Peter Pan and the Pirates", ytId: "PlgEH2IAKHI", era: "1990s", net: "Fox Kids", year: 1990 },
   { name: "Wild West C.O.W.-Boys of Moo Mesa", ytId: "kgizT7q3ek0", era: "1990s", net: "ABC", year: 1992 },
   { name: "The Legend of Prince Valiant", ytId: "v87iwPlNBcY", era: "1990s", net: "Fox Kids", year: 1991 },
@@ -758,7 +842,7 @@ const SHOWS = [
   { name: "ProStars cartoon", ytId: "xXiShTDcr1I", era: "1990s", net: "NBC", year: 1991 },
   { name: "The Superhuman Samurai Syber-Squad", ytId: "eF79GZ7Uo8w", era: "1990s", net: "Syndicated", year: 1994 },
   { name: "Mighty Max cartoon", era: "1990s", net: "Syndicated", year: 1993 , ytId: "oaA-dMLG-1E"},
-  { name: "Beavis and Butt-Head", ytId: "SDCreLu4inw", era: "1990s", net: "MTV", year: 1993 },
+  { name: "Beavis and Butt-Head", ytId: "dRy7yYBoWoo", era: "1990s", net: "MTV", year: 1993 },
   { name: "Daria", ytId: "NO10nHd0dHQ", era: "1990s", net: "MTV", year: 1997 },
   { name: "Invader Zim", ytId: "WgX2cu9N6_8", era: "1990s", net: "Nickelodeon", year: 2001 },
   { name: "The Fairly OddParents", ytId: "no8vgXg_rlw", era: "1990s", net: "Nickelodeon", year: 2001 },
@@ -785,7 +869,7 @@ const SHOWS = [
   { name: "Shaman King (4Kids dub)", ytId: "1lyPg4K8OoY", era: "Anime / US TV", net: "Fox", year: 2003 },
   { name: "Kirby Right Back at Ya!", ytId: "gzTSH51nOG4", era: "Anime / US TV", net: "Fox", year: 2002 },
   { name: "F-Zero GP Legend", era: "Anime / US TV", net: "Fox", year: 2004 , ytId: "x0MLCKqoUb8"},
-  { name: "Hamtaro", ytId: "3EiEX4tmCfY", era: "Anime / US TV", net: "Cartoon Network", year: 2002 },
+  { name: "Hamtaro", ytId: "Tugk-XU_vGU", era: "Anime / US TV", net: "Cartoon Network", year: 2002 },
   { name: "Tenchi Muyo! (Toonami)", ytId: "prixTjWbV_8", era: "Anime / US TV", net: "Cartoon Network", year: 2000 },
   { name: "Outlaw Star (Toonami)", ytId: "8SPBJRzW2HM", era: "Anime / US TV", net: "Cartoon Network", year: 2001 },
   { name: "Big O (Toonami)", ytId: "O_a4-kKsft8", era: "Anime / US TV", net: "Cartoon Network", year: 2001 },
@@ -797,27 +881,27 @@ const SHOWS = [
   { name: "Rurouni Kenshin (Toonami)", ytId: "T9ltYzcTTEE", era: "Anime / US TV", net: "Cartoon Network", year: 2003 },
   { name: "YuYu Hakusho (Toonami)", ytId: "eHf0-CHdQCo", era: "Anime / US TV", net: "Cartoon Network", year: 2002 },
   { name: "Cyborg 009 (Toonami)", ytId: "uf_ESw06aHY", era: "Anime / US TV", net: "Cartoon Network", year: 2003 },
-  { name: "Astro Boy 2003 (Cartoon Network)", ytId: "2Gtt98V4ypQ", era: "Anime / US TV", net: "Cartoon Network", year: 2004 },
+  { name: "Astro Boy 2003 (Cartoon Network)", ytId: "hfr-48LJ-yI", era: "Anime / US TV", net: "Cartoon Network", year: 2004 },
   { name: "Fullmetal Alchemist (Toonami)", ytId: "elyXcwunIYA", era: "Anime / US TV", net: "Cartoon Network", year: 2004 },
   { name: "Wolf's Rain (Toonami)", ytId: "xoQuu7GPxAI", era: "Anime / US TV", net: "Cartoon Network", year: 2004 },
   { name: "FLCL (Adult Swim)", ytId: "Uh3lmE52GVc", era: "Anime / US TV", net: "Adult Swim", year: 2003 },
   { name: "Trigun (Adult Swim)", ytId: "4OxFSy8G5wk", era: "Anime / US TV", net: "Adult Swim", year: 2003 },
-  { name: "Cowboy Bebop (Adult Swim)", ytId: "UFFa0QoHWvE", era: "Anime / US TV", net: "Adult Swim", year: 2001 },
+  { name: "Cowboy Bebop (Adult Swim)", ytId: "0hfOyOBHIq4", era: "Anime / US TV", net: "Adult Swim", year: 2001 },
   { name: "Ghost in the Shell Stand Alone Complex (Adult Swim)", ytId: "QxkMzn4et2U", era: "Anime / US TV", net: "Adult Swim", year: 2004 },
   { name: "Neon Genesis Evangelion (Adult Swim)", ytId: "NgY4-8IzP88", era: "Anime / US TV", net: "Adult Swim", year: 2005 },
   { name: "Eureka Seven (Adult Swim)", ytId: "bhh01s6jOPY", era: "Anime / US TV", net: "Adult Swim", year: 2006 },
   { name: "Samurai Champloo (Adult Swim)", ytId: "LvgwXsf2wOI", era: "Anime / US TV", net: "Adult Swim", year: 2005 },
   { name: "Paranoia Agent (Adult Swim)", ytId: "QEsNDDwhSJ4", era: "Anime / US TV", net: "Adult Swim", year: 2004 },
-  { name: "Pokemon Diamond and Pearl", ytId: "uBmMvGJ7uBE", era: "Anime / US TV", net: "Cartoon Network", year: 2007 },
+  { name: "Pokemon Diamond and Pearl", ytId: "0G2LoluyUh8", era: "Anime / US TV", net: "Cartoon Network", year: 2007 },
   { name: "Naruto Shippuden (Disney XD)", ytId: "SeBp0WltjtA", era: "Anime / US TV", net: "Disney XD", year: 2009 },
-  { name: "Dragon Ball Super (Toonami)", ytId: "7NLwURb4pgE", era: "Anime / US TV", net: "Adult Swim", year: 2017 },
+  { name: "Dragon Ball Super (Toonami)", ytId: "4p2rH49c3rI", era: "Anime / US TV", net: "Adult Swim", year: 2017 },
   { name: "Attack on Titan (Toonami)", ytId: "8UlNp7n3biE", era: "Anime / US TV", net: "Adult Swim", year: 2014 },
-  { name: "Hunter x Hunter (Toonami)", ytId: "eKoD2CRr_KA", era: "Anime / US TV", net: "Adult Swim", year: 2016 },
+  { name: "Hunter x Hunter (Toonami)", ytId: "h6slXeLQisw", era: "Anime / US TV", net: "Adult Swim", year: 2016 },
   { name: "Sword Art Online (Toonami)", ytId: "yHm_KHZT3tY", era: "Anime / US TV", net: "Adult Swim", year: 2017 },
   { name: "Tokyo Ghoul (Toonami)", ytId: "7aMOurgDB-o", era: "Anime / US TV", net: "Adult Swim", year: 2018 },
   { name: "Black Clover (Toonami)", ytId: "xzGH_mUfDzI", era: "Anime / US TV", net: "Adult Swim", year: 2019 },
   { name: "My Hero Academia (Toonami)", ytId: "L1FdEBTJXus", era: "Anime / US TV", net: "Adult Swim", year: 2018 },
-  { name: "Demon Slayer (Toonami)", ytId: "AOoAaOxuz2E", era: "Anime / US TV", net: "Adult Swim", year: 2021 },
+  { name: "Demon Slayer (Toonami)", ytId: "pmanD_s7G3U", era: "Anime / US TV", net: "Adult Swim", year: 2021 },
   { name: "JoJo's Bizarre Adventure (Toonami)", ytId: "o28852--bFE", era: "Anime / US TV", net: "Adult Swim", year: 2016 },
   { name: "Fire Force (Toonami)", ytId: "kPIvA6ejE28", era: "Anime / US TV", net: "Adult Swim", year: 2020 },
   { name: "Bakugan Battle Brawlers", ytId: "mf8dusSJUXw", era: "Anime / US TV", net: "Cartoon Network", year: 2008 },
@@ -829,7 +913,8 @@ const SHOWS = [
   // ─── 2000s ───
   { name: "Foster's Home for Imaginary Friends", ytId: "wgS5sv1VR5k", era: "2000s", net: "Cartoon Network", year: 2004 },
   { name: "Samurai Jack", ytId: "4iBU_D36-AA", era: "2000s", net: "Cartoon Network", year: 2001 },
-  { name: "Static Shock", ytId: "h1-Ef_qvjeQ", era: "2000s", net: "Kids WB", year: 2000 },
+  { name: "Static Shock (Season 1)", era: "2000s", net: "Kids WB", year: 2000, ytId: "eBGDu1pz57c" },
+  { name: "Static Shock (Season 3)", era: "2000s", net: "Kids WB", year: 2003, ytId: "nyJxVI0lT4E" },
   { name: "Duck Dodgers cartoon", ytId: "pyvp2-mUC-g", era: "2000s", net: "Cartoon Network", year: 2003 },
   { name: "Justice League", ytId: "MXph0arElKs", era: "2000s", net: "Cartoon Network", year: 2001 },
   { name: "Teen Titans cartoon", ytId: "yL75mtNZ6PA", era: "2000s", net: "Cartoon Network", year: 2003 },
@@ -847,20 +932,20 @@ const SHOWS = [
   { name: "The Grim Adventures of Billy and Mandy", ytId: "dR1qnEN1j2E", era: "2000s", net: "Cartoon Network", year: 2003 },
   { name: "My Gym Partner's a Monkey", ytId: "oujb1frovKI", era: "2000s", net: "Cartoon Network", year: 2005 },
   { name: "The Life and Times of Juniper Lee", ytId: "6gI_w-kpCoQ", era: "2000s", net: "Cartoon Network", year: 2005 },
-  { name: "Ben 10 original", ytId: "7TbN1l2sLx4", era: "2000s", net: "Cartoon Network", year: 2005 },
+  { name: "Ben 10 original", ytId: "_iIUGEOreiw", era: "2000s", net: "Cartoon Network", year: 2005 },
   { name: "Generator Rex", ytId: "KI96t1Xi9cI", era: "2000s", net: "Cartoon Network", year: 2010 },
   { name: "Mucha Lucha", ytId: "31NxuMrtWsk", era: "2000s", net: "Kids WB", year: 2002 },
   { name: "Xiaolin Showdown", ytId: "n0FPVgfrj50", era: "2000s", net: "Kids WB", year: 2003 },
   { name: "Megas XLR", ytId: "koesW3xMKtY", era: "2000s", net: "Cartoon Network", year: 2004 },
   { name: "Whatever Happened to Robot Jones", ytId: "a-pVqzc57d8", era: "2000s", net: "Cartoon Network", year: 2002 },
   { name: "Hi Hi Puffy AmiYumi", era: "2000s", net: "Cartoon Network", year: 2004 , ytId: "rsAVN9q9HfU"},
-  { name: "Chowder cartoon", ytId: "1RyLtUu9-Dk", era: "2000s", net: "Cartoon Network", year: 2007 },
+  { name: "Chowder cartoon", ytId: "9Bd39ZkLfpg", era: "2000s", net: "Cartoon Network", year: 2007 },
   { name: "The Marvelous Misadventures of Flapjack", ytId: "PtXRAKd4Xb4", era: "2000s", net: "Cartoon Network", year: 2008 },
   { name: "Star Wars Clone Wars 2003", ytId: "g6-yclEOgR4", era: "2000s", net: "Cartoon Network", year: 2003 },
   { name: "Star Wars The Clone Wars 2008", ytId: "i5chHfK6sCc", era: "2000s", net: "Cartoon Network", year: 2008 },
   { name: "Transformers Armada", ytId: "T2TiZo2n_F4", era: "2000s", net: "Cartoon Network", year: 2002 },
   { name: "Transformers Energon", ytId: "jVTyVjIAQJE", era: "2000s", net: "Cartoon Network", year: 2004 },
-  { name: "Transformers Cybertron", ytId: "dXxZyDYINFQ", era: "2000s", net: "Cartoon Network", year: 2005 },
+  { name: "Transformers Cybertron", ytId: "l07KZauuZKg", era: "2000s", net: "Cartoon Network", year: 2005 },
   { name: "G.I. Joe Sigma 6", ytId: "VWCbA6gvhLE", era: "2000s", net: "Cartoon Network", year: 2005 },
   { name: "Power Rangers Wild Force", ytId: "8Y3Ib0YNFaQ", era: "2000s", net: "ABC Kids", year: 2002 },
   { name: "Power Rangers Ninja Storm", ytId: "3D_id7KFopc", era: "2000s", net: "ABC Kids", year: 2003 },
@@ -876,7 +961,7 @@ const SHOWS = [
   { name: "The Adventures of Jimmy Neutron", era: "2000s", net: "Nickelodeon", year: 2002 , ytId: "zm9hb03dvaw"},
   { name: "Catscratch", ytId: "0RH2kuH1hlY", era: "2000s", net: "Nickelodeon", year: 2005 },
   { name: "The Mighty B!", ytId: "Y-iR5rBXKWE", era: "2000s", net: "Nickelodeon", year: 2008 },
-  { name: "El Tigre The Adventures of Manny Rivera", ytId: "m04b7gjKBRw", era: "2000s", net: "Nickelodeon", year: 2007 },
+  { name: "El Tigre The Adventures of Manny Rivera", ytId: "IPewrBjNVVI", era: "2000s", net: "Nickelodeon", year: 2007 },
   { name: "Back at the Barnyard", ytId: "YMH8EGi83lw", era: "2000s", net: "Nickelodeon", year: 2007 },
   { name: "Avatar The Last Airbender", ytId: "zMrMDvW5MaM", era: "2000s", net: "Nickelodeon", year: 2005 },
   { name: "The Legend of Korra", ytId: "NBNpGCIavwA", era: "2000s", net: "Nickelodeon", year: 2012 },
@@ -887,12 +972,12 @@ const SHOWS = [
   { name: "Wander Over Yonder", ytId: "Aofahau1cE0", era: "2000s", net: "Disney Channel", year: 2013 },
   { name: "Randy Cunningham 9th Grade Ninja", ytId: "c4xvxPWEdBE", era: "2000s", net: "Disney XD", year: 2012 },
   { name: "The Batman 2004", era: "2000s", net: "Kids WB", year: 2004 , ytId: "p4qLo_-OS8M"},
-  { name: "Batman Brave and the Bold", ytId: "LLFtgDd16Wg", era: "2000s", net: "Cartoon Network", year: 2008 },
+  { name: "Batman Brave and the Bold", ytId: "9g9r4TFTFyk", era: "2000s", net: "Cartoon Network", year: 2008 },
   { name: "The Spectacular Spider-Man", ytId: "JNA6pzYpwH0", era: "2000s", net: "Kids WB", year: 2008 },
   { name: "Wolverine and the X-Men", ytId: "7L7fNV296h0", era: "2000s", net: "Nicktoons", year: 2009 },
   { name: "The Super Hero Squad Show", ytId: "LWPebJd64HI", era: "2000s", net: "Cartoon Network", year: 2009 },
   { name: "Sym-Bionic Titan", era: "2000s", net: "Cartoon Network", year: 2010 , ytId: "1ABVyqsRX5U"},
-  { name: "Ben 10 Alien Force", ytId: "oOpcwoAX364", era: "2000s", net: "Cartoon Network", year: 2008 },
+  { name: "Ben 10 Alien Force", ytId: "C1vNoxbG23A", era: "2000s", net: "Cartoon Network", year: 2008 },
   { name: "Ben 10 Ultimate Alien", ytId: "bHjDfn9zOyw", era: "2000s", net: "Cartoon Network", year: 2010 },
   { name: "Secret Saturdays", ytId: "um8Gi_fTWGQ", era: "2000s", net: "Cartoon Network", year: 2008 },
   { name: "Storm Hawks", ytId: "SdtcK1Qs2K4", era: "2000s", net: "Cartoon Network", year: 2007 },
@@ -908,18 +993,18 @@ const SHOWS = [
   { name: "Tangled The Series", ytId: "04dZfIeeLDk", era: "2010s", net: "Disney Channel", year: 2017 },
   { name: "The Loud House", ytId: "74pP981Xu_M", era: "2010s", net: "Nickelodeon", year: 2016 },
   { name: "Harvey Beaks", era: "2010s", net: "Nickelodeon", year: 2015 , ytId: "Qntaw6iSkyI"},
-  { name: "Bunsen is a Beast", ytId: "fX9rMPquZGI", era: "2010s", net: "Nickelodeon", year: 2017 },
+  { name: "Bunsen is a Beast", ytId: "Yccs2D7WvkA", era: "2010s", net: "Nickelodeon", year: 2017 },
   { name: "Rise of the Teenage Mutant Ninja Turtles", ytId: "iNV6AXPeJeU", era: "2010s", net: "Nickelodeon", year: 2018 },
-  { name: "TMNT 2012 cartoon", era: "2010s", net: "Nickelodeon", year: 2012 , ytId: "LNXDORibqkE"},
+  { name: "TMNT 2012 cartoon", era: "2010s", net: "Nickelodeon", year: 2012 , ytId: "F6S7ArEr1L0"},
   { name: "Breadwinners", ytId: "ry8IfR6j6qU", era: "2010s", net: "Nickelodeon", year: 2014 },
   { name: "Sanjay and Craig", ytId: "iIUcLQ7OrXo", era: "2010s", net: "Nickelodeon", year: 2013 },
   { name: "Pig Goat Banana Cricket", ytId: "9uzDrVtmuQo", era: "2010s", net: "Nickelodeon", year: 2015 },
   { name: "Teen Titans Go!", ytId: "cQQjdRIUWhY", era: "2010s", net: "Cartoon Network", year: 2013 },
   { name: "The Amazing World of Gumball", ytId: "LOBOJQocArs", era: "2010s", net: "Cartoon Network", year: 2011 },
-  { name: "Adventure Time", ytId: "xXQNdUpCQzw", era: "2010s", net: "Cartoon Network", year: 2010 },
+  { name: "Adventure Time", ytId: "v_am43iRm-A", era: "2010s", net: "Cartoon Network", year: 2010 },
   { name: "Regular Show", ytId: "IN22qZp2Szk", era: "2010s", net: "Cartoon Network", year: 2010 },
   { name: "Steven Universe", era: "2010s", net: "Cartoon Network", year: 2013 , ytId: "eAZs8BCxUOs"},
-  { name: "Clarence cartoon", ytId: "e5TwSVO1SVo", era: "2010s", net: "Cartoon Network", year: 2014 },
+  { name: "Clarence cartoon", ytId: "R8KfFYAjRvg", era: "2010s", net: "Cartoon Network", year: 2014 },
   { name: "Uncle Grandpa", ytId: "9btTgkcn70Q", era: "2010s", net: "Cartoon Network", year: 2013 },
   { name: "Over the Garden Wall", ytId: "WJeeA_O88Zw", era: "2010s", net: "Cartoon Network", year: 2014 },
   { name: "We Bare Bears", ytId: "bpfix3i6Q0o", era: "2010s", net: "Cartoon Network", year: 2015 },
@@ -927,18 +1012,18 @@ const SHOWS = [
   { name: "Craig of the Creek", ytId: "Ln72UQjBgvM", era: "2010s", net: "Cartoon Network", year: 2018 },
   { name: "Victor and Valentino", ytId: "ur1TyBy0ZjI", era: "2010s", net: "Cartoon Network", year: 2019 },
   { name: "ThunderCats Roar", era: "2010s", net: "Cartoon Network", year: 2019 , ytId: "HcGNqrAtsgg"},
-  { name: "Ben 10 2016 reboot", ytId: "7TbN1l2sLx4", era: "2010s", net: "Cartoon Network", year: 2016 },
+  { name: "Ben 10 2016 reboot", ytId: "yX0AhxgR0_I", era: "2010s", net: "Cartoon Network", year: 2016 },
   { name: "Infinity Train", ytId: "kNKTm2CSjKI", era: "2010s", net: "Cartoon Network", year: 2019 },
   { name: "Summer Camp Island", ytId: "mffPmElSc-c", era: "2010s", net: "Cartoon Network", year: 2018 },
   { name: "Voltron Legendary Defender", ytId: "3HgWCp79nzI", era: "2010s", net: "Netflix", year: 2016 },
-  { name: "She-Ra and the Princesses of Power 2018", ytId: "wR65P73X5GI", era: "2010s", net: "Netflix", year: 2018 },
-  { name: "Trollhunters Tales of Arcadia", ytId: "qNB2IRuOluU", era: "2010s", net: "Netflix", year: 2016 },
-  { name: "3Below Tales of Arcadia", ytId: "g11oW0TCzOA", era: "2010s", net: "Netflix", year: 2018 },
+  { name: "She-Ra and the Princesses of Power 2018", ytId: "OuFQxsRzUws", era: "2010s", net: "Netflix", year: 2018 },
+  { name: "Trollhunters Tales of Arcadia", ytId: "TgQWdDlbpZM", era: "2010s", net: "Netflix", year: 2016 },
+  { name: "3Below Tales of Arcadia", era: "2010s", net: "Netflix", year: 2018 },
   { name: "Wizards Tales of Arcadia", ytId: "BSn64DBdy5Q", era: "2010s", net: "Netflix", year: 2020 },
   { name: "The Dragon Prince", ytId: "_dEWswuU0Ek", era: "2010s", net: "Netflix", year: 2018 },
   { name: "Miraculous Ladybug", ytId: "je-F8Da8oe4", era: "2010s", net: "Netflix / Disney", year: 2015 },
   { name: "Transformers Prime", ytId: "jsMCi127rik", era: "2010s", net: "Hub Network", year: 2010 },
-  { name: "Transformers Robots in Disguise 2015", ytId: "8NWqFKHxW4k", era: "2010s", net: "Cartoon Network", year: 2015 },
+  { name: "Transformers Robots in Disguise 2015", ytId: "A4IAhNtML_k", era: "2010s", net: "Cartoon Network", year: 2015 },
   { name: "My Little Pony Friendship Is Magic", ytId: "dtMesafhSYI", era: "2010s", net: "Hub Network", year: 2010 },
   { name: "Littlest Pet Shop cartoon", ytId: "PjMu1h7Fhlc", era: "2010s", net: "Hub Network", year: 2012 },
   { name: "Ninjago Masters of Spinjitzu", ytId: "WRAfxC6DO8k", era: "2010s", net: "Cartoon Network", year: 2011 },
@@ -947,16 +1032,16 @@ const SHOWS = [
   { name: "Power Rangers Beast Morphers", ytId: "GwqDBqhbF5Q", era: "2010s", net: "Nickelodeon", year: 2019 },
   { name: "Thunderbirds Are Go!", ytId: "a2n0widQ4nA", era: "2010s", net: "ITV / Amazon", year: 2015 },
   { name: "Star Wars Rebels", ytId: "Gjuux2b4wN4", era: "2010s", net: "Disney XD", year: 2014 },
-  { name: "Star Wars Resistance", ytId: "ueqKtype7Kk", era: "2010s", net: "Disney Channel", year: 2018 },
-  { name: "Guardians of the Galaxy cartoon", ytId: "yfL76PqAF0s", era: "2010s", net: "Disney XD", year: 2015 },
-  { name: "Avengers Assemble cartoon", ytId: "o-dUgFg1BiI", era: "2010s", net: "Disney XD", year: 2013 },
+  { name: "Star Wars Resistance", era: "2010s", net: "Disney Channel", year: 2018 },
+  { name: "Guardians of the Galaxy cartoon", era: "2010s", net: "Disney XD", year: 2015 },
+  { name: "Avengers Assemble cartoon", ytId: "wnbx9TzKC4w", era: "2010s", net: "Disney XD", year: 2013 },
   { name: "Ultimate Spider-Man cartoon", ytId: "RmX11ysUu5M", era: "2010s", net: "Disney XD", year: 2012 },
   { name: "Hulk and the Agents of SMASH", ytId: "5a-2vbPtmI0", era: "2010s", net: "Disney XD", year: 2013 },
   { name: "Spider-Man 2017 cartoon", ytId: "xsx3JCw62WQ", era: "2010s", net: "Disney XD", year: 2017 },
   { name: "Wabbit A Looney Tunes Production", ytId: "0whibq4j_yI", era: "2010s", net: "Boomerang", year: 2015 },
   { name: "Be Cool Scooby-Doo!", ytId: "U293vY4u4ME", era: "2010s", net: "Boomerang", year: 2015 },
   { name: "The Tom and Jerry Show 2014", era: "2010s", net: "Boomerang", year: 2014 , ytId: "kyBfpv_utMw"},
-  { name: "Bunnicula cartoon", ytId: "9Xkwv0qwGU4", era: "2010s", net: "Boomerang", year: 2016 },
+  { name: "Bunnicula cartoon", ytId: "CSTlShpAqrA", era: "2010s", net: "Boomerang", year: 2016 },
   { name: "Mighty Magiswords", ytId: "B0pArLEicSM", era: "2010s", net: "Cartoon Network", year: 2016 },
   { name: "Kipo and the Age of Wonderbeasts", ytId: "I6jjYBgLkjs", era: "2010s", net: "Netflix", year: 2020 },
 
@@ -969,7 +1054,7 @@ const SHOWS = [
   { name: "Moon Girl and Devil Dinosaur", ytId: "plNOaCnW9tY", era: "2020s", net: "Disney Channel", year: 2023 },
   { name: "Star Wars The Bad Batch", ytId: "qjjZcv4VHWs", era: "2020s", net: "Disney+", year: 2021 },
   { name: "Star Wars Young Jedi Adventures", ytId: "rSdzrJiU7Pw", era: "2020s", net: "Disney+", year: 2023 },
-  { name: "What If? animated", ytId: "ApX1WNU5hok", era: "2020s", net: "Disney+", year: 2021 },
+  { name: "What If? animated", ytId: "XoP4Lr97ZcM", era: "2020s", net: "Disney+", year: 2021 },
   { name: "X-Men '97", ytId: "7L7fNV296h0", era: "2020s", net: "Disney+", year: 2024 },
   { name: "Spidey and His Amazing Friends", ytId: "RuER69Upyhs", era: "2020s", net: "Disney+", year: 2021 },
   { name: "The Ghost and Molly McGee", ytId: "w-9N-Ycr8U8", era: "2020s", net: "Disney Channel", year: 2021 },
@@ -986,10 +1071,10 @@ const SHOWS = [
   { name: "My Adventures with Superman", ytId: "Xo1LB0g3QrE", era: "2020s", net: "Adult Swim", year: 2023 },
   { name: "Unicorn: Warriors Eternal", ytId: "LwqBr3wlMck", era: "2020s", net: "Adult Swim", year: 2023 },
   { name: "Invincible animated", era: "2020s", net: "Amazon", year: 2021 , ytId: "Fyom1YqBggI"},
-  { name: "Hazbin Hotel", ytId: "lyDUfn5f-Lc", era: "2020s", net: "Amazon", year: 2024 },
+  { name: "Hazbin Hotel", ytId: "j_Hrt47jrhM", era: "2020s", net: "Amazon", year: 2024 },
   { name: "The Cuphead Show!", era: "2020s", net: "Netflix", year: 2022 , ytId: "2d2fq0Z3xNk"},
   { name: "Masters of the Universe Revelation", era: "2020s", net: "Netflix", year: 2021 , ytId: "b2qmlN5y81w"},
-  { name: "He-Man and the Masters of the Universe 2021", era: "2020s", net: "Netflix", year: 2021 , ytId: "7yeA7a0uS3A"},
+  { name: "He-Man and the Masters of the Universe 2021", era: "2020s", net: "Netflix", year: 2021 , ytId: "eYrMjQCkn8o"},
   { name: "Centaurworld", ytId: "KmwS89nkcTk", era: "2020s", net: "Netflix", year: 2021 },
   { name: "Kid Cosmic", ytId: "aaERa1tnabk", era: "2020s", net: "Netflix", year: 2021 },
   { name: "Inside Job cartoon", era: "2020s", net: "Netflix", year: 2021 , ytId: "av5rNtEVdC0"},
@@ -1001,6 +1086,52 @@ const SHOWS = [
   { name: "Scavengers Reign", era: "2020s", net: "Adult Swim", year: 2023 , ytId: "uv7ig40ATPo"},
   { name: "Ninjago Dragons Rising", era: "2020s", net: "Netflix", year: 2023 , ytId: "VQ9xn8iy0Es"},
   { name: "Dragon Ball Daima (Toonami)", era: "2020s", net: "Adult Swim", year: 2024 , ytId: "YUDbl9qBihk"},
+
+  // ─── Adult Swim Originals ───
+  { name: "Space Ghost Coast to Coast", era: "Adult Swim", net: "Adult Swim", year: 1994 },
+  { ytId: "lQy2BWI5cmM", name: "Aqua Teen Hunger Force", era: "Adult Swim", net: "Adult Swim", year: 2000 },
+  { ytId: "puEXCyqkEKA", name: "Sealab 2021", era: "Adult Swim", net: "Adult Swim", year: 2000 },
+  { ytId: "n0CmqdivcaY", name: "Harvey Birdman Attorney at Law", era: "Adult Swim", net: "Adult Swim", year: 2001 },
+  { ytId: "BCOZE56A4tA", name: "The Brak Show", era: "Adult Swim", net: "Adult Swim", year: 2001 },
+  { ytId: "mL0eS9smGy8", name: "Home Movies", era: "Adult Swim", net: "Adult Swim", year: 2001 },
+  { ytId: "EinYHRkGwVI", name: "Robot Chicken", era: "Adult Swim", net: "Adult Swim", year: 2005 },
+  { ytId: "1aNRM8tQ7nw", name: "The Venture Bros", era: "Adult Swim", net: "Adult Swim", year: 2003 },
+  { ytId: "O_K40CglJF0", name: "Moral Orel", era: "Adult Swim", net: "Adult Swim", year: 2005 },
+  { ytId: "98aubtBnbww", name: "Metalocalypse", era: "Adult Swim", net: "Adult Swim", year: 2006 },
+  { ytId: "-YqnwVr6vg8", name: "Superjail!", era: "Adult Swim", net: "Adult Swim", year: 2007 },
+  { ytId: "aZyd7N1hlHw", name: "The Boondocks", era: "Adult Swim", net: "Adult Swim", year: 2005 },
+  { name: "Frisky Dingo", era: "Adult Swim", net: "Adult Swim", year: 2006 },
+  { ytId: "53I5C-ijFJY", name: "Squidbillies", era: "Adult Swim", net: "Adult Swim", year: 2005 },
+  { ytId: "0Qrh83BJwfs", name: "12 oz. Mouse", era: "Adult Swim", net: "Adult Swim", year: 2005 },
+  { ytId: "wFIU5bo3__8", name: "Stroker and Hoop", era: "Adult Swim", net: "Adult Swim", year: 2004 },
+  { ytId: "wh10k2LPZiI", name: "Rick and Morty", era: "Adult Swim", net: "Adult Swim", year: 2013 },
+  { ytId: "lTcWKRa5AYE", name: "Mike Tyson Mysteries", era: "Adult Swim", net: "Adult Swim", year: 2014 },
+  { ytId: "zSTNxUb79Ik", name: "Mr. Pickles", era: "Adult Swim", net: "Adult Swim", year: 2014 },
+  { ytId: "HG4Mv1IHVS8", name: "Ballmastrz 9009", era: "Adult Swim", net: "Adult Swim", year: 2018 },
+  { ytId: "0Aymi_-7ams", name: "Final Space", era: "Adult Swim", net: "Adult Swim", year: 2018 },
+  { name: "Tigtone", era: "Adult Swim", net: "Adult Swim", year: 2019 },
+  { ytId: "nNUH7a5CAU4", name: "Joe Pera Talks With You", era: "Adult Swim", net: "Adult Swim", year: 2018 },
+  { name: "Lazor Wulf", era: "Adult Swim", net: "Adult Swim", year: 2019 },
+  { ytId: "HsZpOUZEyfo", name: "Perfect Hair Forever", era: "Adult Swim", net: "Adult Swim", year: 2004 },
+  { ytId: "v4FpKVRXoX8", name: "Black Dynamite animated", era: "Adult Swim", net: "Adult Swim", year: 2012 },
+  { ytId: "-jfNEAiHXFM", name: "Axe Cop", era: "Adult Swim", net: "Adult Swim", year: 2013 },
+  { ytId: "XGXP53T3Zss", name: "Stone Quackers", era: "Adult Swim", net: "Adult Swim", year: 2014 },
+  { ytId: "YYRsNOpQS2Q", name: "Minoriteam", era: "Adult Swim", net: "Adult Swim", year: 2005 },
+  { ytId: "SbsRUlpMtaE", name: "Assy McGee", era: "Adult Swim", net: "Adult Swim", year: 2006 },
+  { ytId: "o1fzfnpmX_0", name: "Birdgirl", era: "Adult Swim", net: "Adult Swim", year: 2021 },
+  { name: "Teenage Euthanasia", era: "Adult Swim", net: "Adult Swim", year: 2021 },
+  { ytId: "vpV6ov6_aa4", name: "Yolo Crystal Fantasy", era: "Adult Swim", net: "Adult Swim", year: 2020 },
+  { ytId: "aWvd8ouoy3g", name: "Beavis and Butt-Head reboot", era: "Adult Swim", net: "Adult Swim", year: 2022 },
+  { ytId: "lbJlqj-dh5g", name: "Uzumaki animated", era: "Adult Swim", net: "Adult Swim", year: 2024 },
+  { ytId: "1mlnRCHwlvQ", name: "Korgoth of Barbaria", era: "Adult Swim", net: "Adult Swim", year: 2006 },
+  { ytId: "vDai6PJxiWw", name: "Xavier Renegade Angel", era: "Adult Swim", net: "Adult Swim", year: 2007 },
+  { ytId: "ivau3rCAqVc", name: "Delocated", era: "Adult Swim", net: "Adult Swim", year: 2009 },
+  { name: "Eagleheart", era: "Adult Swim", net: "Adult Swim", year: 2011 },
+  { ytId: "XeqllWx3yc0", name: "NTSF SD SUV", era: "Adult Swim", net: "Adult Swim", year: 2011 },
+  { ytId: "xlaMngkOSjw", name: "Children's Hospital", era: "Adult Swim", net: "Adult Swim", year: 2008 },
+  { name: "Your Pretty Face is Going to Hell", era: "Adult Swim", net: "Adult Swim", year: 2013 },
+  { ytId: "rNIrBy2xeOg", name: "Hot Streets", era: "Adult Swim", net: "Adult Swim", year: 2018 },
+  { name: "Tender Touches", era: "Adult Swim", net: "Adult Swim", year: 2017 },
 ];
 
 // Deduplicate
@@ -1085,6 +1216,7 @@ function toggleFilter(val,activeSet,containerId,cls){
     const isAnime=v==='Anime / US TV';
     b.className='pill'+(cls==='net'?' net':'')+' '+(activeSet.has(v)?'on'+(isAnime?' anime':cls==='net'?' net':''):'');
   });
+  applyEraTheme();
   renderList();
 }
 
@@ -1137,6 +1269,13 @@ function playShow(show){
   updateStars();
   renderList();
   renderActiveTab();
+  applyEraTheme();
+  // update channel display
+  const chEl = document.getElementById('tvChannel');
+  if(chEl) {
+    const idx = shows.findIndex(s=>s.name===show.name);
+    chEl.textContent = 'CH '+(idx+1).toString().padStart(2,'0');
+  }
   // update URL param (works on real hosting, silently ignored in sandboxed iframes)
   try {
     const url=new URL(window.location.href);
@@ -1219,6 +1358,11 @@ function rateShow(name,val){
   state.ratings[name]=val;
   saveStorage();
   updateStars();
+  // pop animation on rated stars
+  document.querySelectorAll('#starRating .star.on').forEach((s,i)=>{
+    s.style.animation='none';
+    setTimeout(()=>{s.style.animation=`starPop 0.2s ease ${i*0.05}s`;},10);
+  });
   showToast('Rated '+val+' star'+(val>1?'s':'')+'!');
   if(currentTab==='top')renderActiveTab();
 }
@@ -1353,7 +1497,7 @@ function renderList(){
     item.innerHTML=
       '<div class="item-num">'+(i+1)+'</div>'+
       '<div class="item-info">'+
-        '<div class="item-name">'+(show.ytId?'':'<span title="No theme link yet" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#e94560;opacity:.7;margin-right:4px;vertical-align:middle;"></span>')+show.name+(isFav?' <span style="color:#ff6b9d;font-size:.7rem;">♥</span>':'')+'</div>'+
+        '<div class="item-name">'+(show.ytId?'':'<span title="No theme link yet" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);opacity:.7;margin-right:4px;vertical-align:middle;"></span>')+show.name+(isFav?' <span style="color:#b3475e;font-size:.7rem;">♥</span>':'')+'</div>'+
         '<div class="item-meta"><span>'+(show.year?show.year+' · ':'')+show.era+'</span><span class="net-tag">'+show.net+'</span></div>'+
       '</div>'+
       '<div class="item-actions">'+
@@ -1445,16 +1589,14 @@ function switchMobTab(tab) {
 }
 
 // Init mobile — shows tab active by default
-if (window.innerWidth <= 768) {
-  document.querySelector('.sidebar').classList.add('mob-active');
-}
-
-window.addEventListener('resize', () => {
+// Init mobile — always start on Shows tab
+function initMobile() {
   if (window.innerWidth <= 768) {
-    const anyActive = document.querySelector('.mob-active');
-    if (!anyActive) document.querySelector('.sidebar').classList.add('mob-active');
+    switchMobTab('shows');
   }
-});
+}
+initMobile();
+window.addEventListener('resize', initMobile);
 // ── Init ──
 // Network cascading dropdowns
 function getAvailableNets(){
@@ -1515,10 +1657,23 @@ function updateNetToggleLabel(){
   label.textContent=active.length?'📡 Network ('+active.length+' selected)':'📡 Filter by Network';
 }
 
+// ── Era-adaptive theming ──
+// Palette follows the show being played; otherwise a single selected era filter.
+function applyEraTheme(){
+  let era='';
+  if(currentShow) era=currentShow.era;
+  else{
+    const sel=[...activeEras].filter(e=>e!=='All');
+    if(sel.length===1) era=sel[0];
+  }
+  document.body.dataset.era=era;
+}
+
 buildPills('eraPills',ALL_ERAS,activeEras,'era');
 renderNetDropdowns();
 renderList();
 renderActiveTab();
+applyEraTheme();
 </script>
 </body>
 </html>
